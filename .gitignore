@@ -112,3 +112,7 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# bins
+php/php-7.2.5
+mysql/*
