@@ -39,7 +39,7 @@ class Header():
         self.data = ''
         self._extMap = {'html': 'text/html', 'htm': 'text/html',
                         'php': 'text/html', 'css': 'text/css',
-                        'js': 'text/javascript', 'json': 'application/json',
+                        'js': 'application/javascript', 'json': 'application/json',
                         'gif': 'image/gif', 'svg': 'image/svg+xml',
                         'jpeg': 'image/jpeg', 'png': 'image/png'}
         self.functions = {'Host': self._getHost, 'X-Powered-By': self._powered,
@@ -72,6 +72,8 @@ class Header():
         if self._extension == 'css':
             self.send_headers['Content-Type'] = 'text/css'
             # self.send_headers.pop('Accept-Ranges')
+        elif self._extension == 'js':
+            self.send_headers['Content-Type'] = 'application/javascript'
         status_code = self.Files.status_code
 
         # status code
@@ -114,6 +116,9 @@ class Header():
             #print('************\n', cont_lent, '***********\n')
             #string = string.replace('Content-Length: 40\r\n', cont_lent)
             # string 'Content-Length: 40\r\n'
+        elif self._extension == 'js':
+            con_len = 'Content-Length: 23\r\n'
+            string = string.replace('Content-Length: 40\r\n', con_len)
         else:
             # return length of the content that we will be sending
             cont_len = self._contentLength(string)
@@ -132,8 +137,13 @@ class Header():
         elif self.send_headers['Content-Type'] == 'text/css':
             string += str(self.data)
             return bytes(string + '\r\n', self._encoding)
+        
+        elif self.send_headers['Content-Type'] == 'application/javascript':
+            string += str(self.data)
+            return bytes(string + '\r\n', self._encoding)
 
         else:
+            print('\n*****', self.send_headers['Content-Type'], '\n\n*******')
             total = bytes(string + '\r\n', 'ascii') + self.data
             return total
 
