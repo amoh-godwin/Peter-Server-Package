@@ -11,6 +11,6 @@ class CssRunner():
 
 
         # print the file
-        with open(file, 'rb') as css_file:
+        with open(file, encoding='utf-8') as css_file:
             read = css_file.read()
         return read

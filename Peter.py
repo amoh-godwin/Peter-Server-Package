@@ -54,6 +54,9 @@ class Peter(socketserver.BaseRequestHandler):
         # This is the response from the server
         # to the browser
         resp = Header.computeResponse(peter)
+        
+        # print resp
+        print('\n\n\n', resp, '\n\n\n')
 
         # Send the complete data to the browser
         self.request.sendall(resp)
@@ -75,7 +78,7 @@ if __name__ == "__main__":
     else:
 
         # set it to the native that we are using
-        port = 5555
+        port = 7773
 
     HOST, PORT = "localhost", port
 

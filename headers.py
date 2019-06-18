@@ -29,8 +29,13 @@ class Header():
         self._content_length = 0
         self.raw_headers = ""
         self.headerPair = {}
-        self.send_headers = {'Connection': 'Keep-Alive', 'Accept-Ranges': 'bytes',
-                             'Server': 'Peter (Py/3.6.1)', 'Content-type': 'text/html'}
+        self.send_headers = {'Server': 'Peter (Py/3.6.1)',
+                             'X-Frame-Options': 'SAMEORIGIN',
+                             'Accept-Ranges': 'bytes',
+                             'Content-Length': '40',
+                             'Keep-Alive': 'timeout=5, max=99',
+                             'Connection': 'Keep-Alive',
+                             'Content-Type': 'text/html'}
         self.data = ''
         self._extMap = {'html': 'text/html', 'htm': 'text/html',
                         'php': 'text/html', 'css': 'text/css',
@@ -65,12 +70,15 @@ class Header():
         self._encoding = self.Files.encoding
         self._extension = self.Files._file_extension
         if self._extension == 'css':
-            self.send_headers['Content-type'] = 'text/css'
-            self.send_headers.pop('Accept-Ranges')
+            self.send_headers['Content-Type'] = 'text/css'
+            # self.send_headers.pop('Accept-Ranges')
         status_code = self.Files.status_code
 
         # status code
         string += self._status(status_code)
+
+        # the actual date this whole event was completed
+        string += self._date()
 
         #*** Coming from PHP  ***#
         self.send_headers.update(self.Files.additional_head_str)
@@ -98,25 +106,32 @@ class Header():
         # will return empty is no cookies are requested
         #cookies_str = self._cookie(cookies)
         string += self._cookie()"""
-
-        # the actual date this whole event was completed
-        string += self._date()
-
-        # return length of the content that we will be sending
-        string += self._contentLength(string)
+        
+        # for testing sake
+        if self._extension == 'css':
+            pass
+            #cont_lent = self._contentLength(string)
+            #print('************\n', cont_lent, '***********\n')
+            #string = string.replace('Content-Length: 40\r\n', cont_lent)
+            # string 'Content-Length: 40\r\n'
+        else:
+            # return length of the content that we will be sending
+            cont_len = self._contentLength(string)
+            print('************\n', cont_len, '***********\n')
+            string = string.replace('Content-Length: 40\r\n', cont_len)
 
         # this kinda ends the response header
         string += '\r\n'
         
         
         # ----
-        if self.send_headers['Content-type'] == 'text/html':
+        if self.send_headers['Content-Type'] == 'text/html':
             string += str(self.data)
-            return bytes(string, self._encoding)
+            return bytes(string + '\r\n', self._encoding)
 
-        elif self.send_headers['Content-type'] == 'text/css':
+        elif self.send_headers['Content-Type'] == 'text/css':
             string += str(self.data)
-            return bytes(string, self._encoding)
+            return bytes(string + '\r\n', self._encoding)
 
         else:
             total = bytes(string + '\r\n', 'ascii') + self.data
@@ -270,8 +285,8 @@ class Header():
 
     def _date(self):
         string_time = "Date: "
-        string_time += time.strftime('%a, %d %b %Y %H:%M:%S %Z')
-        return string_time + "\r\n"
+        string_time += time.strftime('%a, %d %b %Y %H:%M:%S') # %Z taken away
+        return string_time + " GMT" + "\r\n"
 
 
     def _contentLength(self, resp):
@@ -377,7 +392,7 @@ class Header():
         if self._extension in self._extMap:
 
             # add the corresponding format to the string
-            self.send_headers['Content-type'] = self._extMap[self._extension]
+            self.send_headers['Content-Type'] = self._extMap[self._extension]
 
         # if its a css file
         if self._extension == 'css':
@@ -390,6 +405,6 @@ class Header():
         else:
 
             # it is not a css file
-            self.send_headers['Content-type'] += '; charset='+encoding
+            self.send_headers['Content-Type'] += '; charset='+encoding
 
         return# string + "\r\n"
