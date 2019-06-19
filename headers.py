@@ -23,13 +23,13 @@ class Header():
         self.request_method = ''
         self.requested_file = ''
         self.requested_body = ''
-        self._encoding = ''
+        self._encoding = 'utf-8'
         self._extension = ''
         self.Files = FileSystem()
         self._content_length = 0
         self.raw_headers = ""
         self.headerPair = {}
-        self.send_headers = {'Server': 'Peter (Py/3.6.1)',
+        self.send_headers = {'Server': 'Peter (Python/3.6.1)',
                              'X-Frame-Options': 'SAMEORIGIN',
                              'Accept-Ranges': 'bytes',
                              'Content-Length': '40',
@@ -39,7 +39,7 @@ class Header():
         self.data = ''
         self._extMap = {'html': 'text/html', 'htm': 'text/html',
                         'php': 'text/html', 'css': 'text/css',
-                        'js': 'text/javascript', 'json': 'application/json',
+                        'js': 'application/javascript', 'json': 'application/json',
                         'gif': 'image/gif', 'svg': 'image/svg+xml',
                         'jpeg': 'image/jpeg', 'png': 'image/png'}
         self.functions = {'Host': self._getHost, 'X-Powered-By': self._powered,
@@ -69,9 +69,9 @@ class Header():
         self.data = self.Files.data
         self._encoding = self.Files.encoding
         self._extension = self.Files._file_extension
-        if self._extension == 'css':
-            self.send_headers['Content-Type'] = 'text/css'
-            # self.send_headers.pop('Accept-Ranges')
+        self._contentType()
+        self.send_headers['Content-Length'] = str(self._contentLength())
+        print('send', self.send_headers)
         status_code = self.Files.status_code
 
         # status code
@@ -108,7 +108,7 @@ class Header():
         string += self._cookie()"""
         
         # for testing sake
-        if self._extension == 'css':
+        """if self._extension == 'css':
             pass
             #cont_lent = self._contentLength(string)
             #print('************\n', cont_lent, '***********\n')
@@ -118,7 +118,7 @@ class Header():
             # return length of the content that we will be sending
             cont_len = self._contentLength(string)
             print('************\n', cont_len, '***********\n')
-            string = string.replace('Content-Length: 40\r\n', cont_len)
+            string = string.replace('Content-Length: 40\r\n', cont_len)"""
 
         # this kinda ends the response header
         string += '\r\n'
@@ -134,7 +134,8 @@ class Header():
             return bytes(string + '\r\n', self._encoding)
 
         else:
-            total = bytes(string + '\r\n', 'ascii') + self.data
+            total = bytes(string + '\r\n', self._encoding) + \
+            bytes(self.data, self._encoding)
             return total
 
         # Here is the actual response data
@@ -285,60 +286,25 @@ class Header():
 
     def _date(self):
         string_time = "Date: "
-        string_time += time.strftime('%a, %d %b %Y %H:%M:%S') # %Z taken away
-        return string_time + " GMT" + "\r\n"
+        string_time += time.strftime('%a, %d %b %Y %H:%M:%S %Z') # %Z taken away
+        return string_time + "\r\n"
 
 
-    def _contentLength(self, resp):
-
-
-        # convert resp to bytes
-        bbin = bytes(resp, self._encoding)
-
-        # here is the len of the resp
-        blen = len(bbin)
-
-        # convert main data to bytes
-        if self._extension == 'html' or self._extension == 'htm':
-
-            bdata = bytes(self.data, self._encoding)
+    def _contentLength(self):
+        
+        ddata = bytes(self.data, self._encoding)
     
-            # len of data from outside
-            bdatalen = len(bdata)
-            
-
-        else:
-
-            bdatalen = self.Files.contentLength
-
-        # what we have for now
-        content_length = blen + bdatalen
+        # len of data from outside
+        self._content_length = len(ddata) + 2
 
         string = 'Content-Length: '
-
-        # convert content_length stmt to bytes
-        bstmt = bytes(string, self._encoding)
-
-        # Add its length to the content length that we have
-        content_length += len(bstmt)
-
-        # Now convert the length to a string to find its no of them
-        strcontlen = str(content_length)
-
-        # the length of the decimals
-        lencont = len(strcontlen)
-
-        # This will them be the very final length that we are yet to send
-        # The plus five will take care of the \r\n
-        # and the last \n that before actual data and EOF which is \r\n
-        self._content_length = content_length + lencont + 5
 
         # Now we are just continuing with the content length string
         if 'Content-Disposition' in  self.send_headers:
             string = ''
         else:
             string += str(self._content_length) + '\r\n'
-        return string
+        return self._content_length
 
 
     def _cookie(self, cookies=None):
@@ -395,7 +361,7 @@ class Header():
             self.send_headers['Content-Type'] = self._extMap[self._extension]
 
         # if its a css file
-        if self._extension == 'css':
+        if self._extension in ['css', 'js']:
             pass
 
         # if it is an image
