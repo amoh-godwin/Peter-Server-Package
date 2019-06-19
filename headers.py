@@ -5,10 +5,10 @@ import time
 from fs import FileSystem
 
 class Header():
-    
+
     """
     This handles the calculation of the header variables.
-    
+
     Apart from the computeResponse function, every one of the functions
     are returning a string and only a string
     The computeResponse output should be a byte of-course
