@@ -32,7 +32,7 @@ class Header():
         self.send_headers = {'Server': 'Peter (Python/3.6.1)',
                              'X-Frame-Options': 'SAMEORIGIN',
                              'Accept-Ranges': 'bytes',
-                             'Content-Length': '40',
+                             'Content-Length': '0',
                              'Keep-Alive': 'timeout=5, max=99',
                              'Connection': 'Keep-Alive',
                              'Content-Type': 'text/html'}
@@ -90,39 +90,8 @@ class Header():
             string += self.send_headers[header]
             string += '\r\n'
 
-        
-        ## Quick ADD of Headers
-        # To-do
-        """string += 'Accept-Ranges: bytes\r\n'
-        string += 'Connection: Keep-Alive\r\n'
-
-        # the type of the content that we will be sending
-        string += self._contentType()
-
-        # the Godly name of the Server
-        string += self.server_name + "\r\n"
-
-        # the cookies that we will be sending
-        # will return empty is no cookies are requested
-        #cookies_str = self._cookie(cookies)
-        string += self._cookie()"""
-        
-        # for testing sake
-        """if self._extension == 'css':
-            pass
-            #cont_lent = self._contentLength(string)
-            #print('************\n', cont_lent, '***********\n')
-            #string = string.replace('Content-Length: 40\r\n', cont_lent)
-            # string 'Content-Length: 40\r\n'
-        else:
-            # return length of the content that we will be sending
-            cont_len = self._contentLength(string)
-            print('************\n', cont_len, '***********\n')
-            string = string.replace('Content-Length: 40\r\n', cont_len)"""
-
         # this kinda ends the response header
         string += '\r\n'
-        
         
         # ----
         if self.send_headers['Content-Type'] == 'text/html':
@@ -134,27 +103,8 @@ class Header():
             return bytes(string + '\r\n', self._encoding)
 
         else:
-            total = bytes(string + '\r\n', self._encoding) + \
-            bytes(self.data, self._encoding)
+            total = bytes(string + '\r\n' + self.data, self._encoding)
             return total
-
-        # Here is the actual response data
-        """if self._extension == 'css':
-            total = bytes(string, 'ascii') + self.data
-            print(total)
-            return total
-
-        # if its an image
-        elif self._extMap[self._extension].find('image/') > -1:
-            total = bytes(string, 'ascii') + self.data
-            return total
-
-        else:
-            string += self.data
-    
-            # encode everything and send it to the browser
-            return bytes(string, self._encoding)"""
-
 
     def getRequest(self, header):
 
