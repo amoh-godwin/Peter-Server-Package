@@ -39,7 +39,8 @@ class Header():
         self.data = ''
         self._extMap = {'html': 'text/html', 'htm': 'text/html',
                         'php': 'text/html', 'css': 'text/css',
-                        'js': 'application/javascript', 'json': 'application/json',
+                        'js': 'application/javascript',
+                        'json': 'application/json',
                         'gif': 'image/gif', 'svg': 'image/svg+xml',
                         'jpeg': 'image/jpeg', 'png': 'image/png'}
         self.functions = {'Host': self._getHost, 'X-Powered-By': self._powered,
@@ -236,12 +237,12 @@ class Header():
 
     def _date(self):
         string_time = "Date: "
-        string_time += time.strftime('%a, %d %b %Y %H:%M:%S %Z') # %Z taken away
+        string_time += time.strftime('%a, %d %b %Y %H:%M:%S %Z')
         return string_time + "\r\n"
 
 
     def _contentLength(self):
-        
+
         ddata = bytes(self.data, self._encoding)
     
         # len of data from outside
