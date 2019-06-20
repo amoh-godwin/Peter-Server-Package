@@ -4,6 +4,7 @@
 import time
 from fs import FileSystem
 
+
 class Header():
 
     """
@@ -14,7 +15,6 @@ class Header():
     The computeResponse output should be a byte of-course
 
     """
-
 
     def __init__(self):
         super.__self__
@@ -49,16 +49,17 @@ class Header():
 
     def computeResponse(self):
 
-
         """
         Computes the response to be sent back to the browser
         """
 
-
         string = ""
 
-        #cookies = {'phpmyadmin': {'phpMyAdmin': "onesdfk", "expires": "Fri, 25-May-2018 09:46:00 GMT", "Max-Age": "2592000", "path": "/phk/jhkl/"},
-        # 'user-1': {"user-1": "Jesus", "path": "/path/about/", "expires": "Fri, 25-May-2018 09:46:00 GMT"}}
+        # cookies = {'phpmyadmin': {'phpMyAdmin': "onesdfk", "expires": "Fri,
+        # 25-May-2018 09:46:00 GMT", "Max-Age": "2592000",
+        # "path": "/phk/jhkl/"},
+        # 'user-1': {"user-1": "Jesus", "path": "/path/about/",
+        #   "expires": "Fri, 25-May-2018 09:46:00 GMT"}}
 
         # calculation of the data the we will be sending
         self.Files = FileSystem()
@@ -81,7 +82,7 @@ class Header():
         # the actual date this whole event was completed
         string += self._date()
 
-        #*** Coming from PHP  ***#
+        # *** Coming from PHP  ***
         self.send_headers.update(self.Files.additional_head_str)
 
         # Header calculator
@@ -93,7 +94,7 @@ class Header():
 
         # this kinda ends the response header
         string += '\r\n'
-        
+
         # ----
         if self.send_headers['Content-Type'] == 'text/html':
             string += str(self.data)
@@ -115,7 +116,6 @@ class Header():
 
         """
 
-
         # convert from bytes to text
         self.raw_headers = str(header, 'ascii')
 
@@ -134,7 +134,6 @@ class Header():
 
         # Break into individual lines
         lines = self.raw_headers.split('\r\n')
-
 
         # This the request either get or post
         # It does not follow the pairing protocol of the rest
@@ -155,7 +154,7 @@ class Header():
 
         # loop through the functions we have set and declared
         for func in self.functions:
-            
+
             # key exist in the headers that was sent by client
             if func in self.headerPair:
 
@@ -167,27 +166,21 @@ class Header():
                 # accept a single value
                 function(self.headerPair[func])
 
-
     def _getHost(self, hostname_str):
-
 
         """
         Gets Host and its port
 
         """
 
-
         # for now just put everything as hostname
         # later we break it
         self.host = hostname_str
 
-
     def _getFile(self, req_str):
 
-
         """
         """
-
 
         # strip the http protocol off
         parsed = req_str[:-8]
@@ -206,16 +199,13 @@ class Header():
             # the file requested for
             self.requested_file = splits[1]
 
-
     def _getCookies(self, cookie_str):
-
 
         """
         Breaks the cookie string into individual cookies
         And store them
 
         """
-
 
         # split them in main entries
         splits = cookie_str.split('; ')
@@ -228,38 +218,33 @@ class Header():
             # Add the key-value pairs to the cookies variable
             self.cookies[pairs[0]] = pairs[1]
 
-
     def _status(self, digit):
         string = 'HTTP/1.1 '
         string += str(digit) + " OK\r\n"
         return string
-
 
     def _date(self):
         string_time = "Date: "
         string_time += time.strftime('%a, %d %b %Y %H:%M:%S %Z')
         return string_time + "\r\n"
 
-
     def _contentLength(self):
 
         ddata = bytes(self.data, self._encoding)
-    
+
         # len of data from outside
         self._content_length = len(ddata) + 2
 
         string = 'Content-Length: '
 
         # Now we are just continuing with the content length string
-        if 'Content-Disposition' in  self.send_headers:
+        if 'Content-Disposition' in self.send_headers:
             string = ''
         else:
             string += str(self._content_length) + '\r\n'
         return self._content_length
 
-
     def _cookie(self, cookies=None):
-
 
         # set string to empty
         string = ""
@@ -283,20 +268,16 @@ class Header():
 
         return string
 
-
     def _powered(self, statement):
-
 
         string = 'X-Powered-By: ' + statement
         return string + "\r\n"
 
-
     def _contentType(self):
-
 
         # if the encoding detected was ascii use utf-8 instead
         if self._encoding == 'ascii':
-            
+
             # utf-8 handles a lot more
             encoding = 'utf-8'
 
@@ -322,6 +303,6 @@ class Header():
         else:
 
             # it is not a css file
-            self.send_headers['Content-Type'] += '; charset='+encoding
+            self.send_headers['Content-Type'] += '; charset=' + encoding
 
-        return# string + "\r\n"
+        return  # string + "\r\n"
