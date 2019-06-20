@@ -33,8 +33,8 @@ def test_computeResponse(filename, cont_type):
         # if it was a key-value pair
         if len(splits) > 1:
 
-        # make it a part of the header pair dict
-        header_pair[splits[0]] = splits[1]
+            # make it a part of the header pair dict
+            header_pair[splits[0]] = splits[1]
 
     assert type(resp) == bytes
     assert header_pair['Server'] == 'Peter (Python/3.6.1)'
