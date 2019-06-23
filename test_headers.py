@@ -8,9 +8,10 @@ head = Header()
 
 
 @pytest.mark.parametrize('filename,cont_type', [
-        ('/css.html', 'text/html; charset=utf-8'),
-        ('/its.css', 'text/css'),
-        ('/its.js', 'application/javascript')])
+        ('/_tests/index.html', 'text/html; charset=utf-8'),
+        ('/_tests/index.css', 'text/css'),
+        ('/_tests/main.js', 'application/javascript'),
+        ('/_tests/', 'text/html; charset=utf-8')])
 def test_computeResponse(filename, cont_type):
     head.requested_file = filename
     resp = head.computeResponse()
