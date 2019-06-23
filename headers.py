@@ -42,7 +42,8 @@ class Header():
                         'js': 'application/javascript',
                         'json': 'application/json',
                         'gif': 'image/gif', 'svg': 'image/svg+xml',
-                        'jpeg': 'image/jpeg', 'png': 'image/png'}
+                        'jpeg': 'image/jpeg', 'png': 'image/png',
+                        'ico': 'image/ico'}
         self.functions = {'Host': self._getHost, 'X-Powered-By': self._powered,
                           'Cookie': self._getCookies}
         self.cookies = {}
@@ -64,6 +65,7 @@ class Header():
         # calculation of the data the we will be sending
         self.Files = FileSystem()
         self.Files.request_method = self.request_method
+        self._extension = self.Files._file_extension
         self.Files.post_data = self.requested_body
         self.Files.search(self.requested_file)
 
@@ -71,6 +73,7 @@ class Header():
         self.data = self.Files.data
         self._encoding = self.Files.encoding
         self._extension = self.Files._file_extension
+        print('extension: ', self.Files._file_extension)
         self._contentType()
         self.send_headers['Content-Length'] = str(self._contentLength())
         print('send', self.send_headers)
@@ -292,12 +295,13 @@ class Header():
             # add the corresponding format to the string
             self.send_headers['Content-Type'] = self._extMap[self._extension]
 
+        print('extension', self._extension)
+
         # if its a css file
         if self._extension in ['css', 'js']:
             pass
-
-        # if it is an image
-        elif self._extMap[self._extension].find('image/') > -1:
+        
+        elif 'image' in self._extMap[self._extension]:
             pass
 
         else:
