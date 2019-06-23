@@ -62,6 +62,9 @@ class Header():
         # 'user-1': {"user-1": "Jesus", "path": "/path/about/",
         #   "expires": "Fri, 25-May-2018 09:46:00 GMT"}}
 
+        if self.requested_file == '':
+            return ''
+
         # calculation of the data the we will be sending
         self.Files = FileSystem()
         self.Files.request_method = self.request_method
@@ -73,10 +76,8 @@ class Header():
         self.data = self.Files.data
         self._encoding = self.Files.encoding
         self._extension = self.Files._file_extension
-        print('extension: ', self.Files._file_extension)
         self._contentType()
         self.send_headers['Content-Length'] = str(self._contentLength())
-        print('send', self.send_headers)
         status_code = self.Files.status_code
 
         # status code
@@ -121,6 +122,9 @@ class Header():
 
         # convert from bytes to text
         self.raw_headers = str(header, 'ascii')
+        
+        if self.raw_headers == '':
+            return 1
 
         # break
         splited = self.raw_headers.split('\r\n\r\n')
@@ -294,8 +298,6 @@ class Header():
 
             # add the corresponding format to the string
             self.send_headers['Content-Type'] = self._extMap[self._extension]
-
-        print('extension', self._extension)
 
         # if its a css file
         if self._extension in ['css', 'js']:
