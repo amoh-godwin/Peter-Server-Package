@@ -9,6 +9,8 @@ import socketserver
 
 import sys
 
+import dev_installs
+
 from headers import Header
 
 class Peter(socketserver.BaseRequestHandler):
@@ -42,7 +44,7 @@ class Peter(socketserver.BaseRequestHandler):
         # The data that the browser came with
         # basically the request handler
         print(self.data)
-        
+
         print('\n\n')
 
         # Initialise the header class
@@ -54,7 +56,7 @@ class Peter(socketserver.BaseRequestHandler):
         # This is the response from the server
         # to the browser
         resp = Header.computeResponse(peter)
-        
+
         # print resp
         print('\n\n\n', resp, '\n\n\n')
 
@@ -68,6 +70,9 @@ class ThreadTCP(socketserver.ThreadingMixIn, socketserver.TCPServer):
 
 if __name__ == "__main__":
 
+    # For development mode
+    dev_installs.install()
+    
     # if user passed in any other value
     # should be in the second index
     if len(sys.argv) > 1:
@@ -84,10 +89,10 @@ if __name__ == "__main__":
 
     with ThreadTCP((HOST, PORT), Peter) as server:
         # interrupt the program with Ctrl-C
-        
+
         print('\n\n')
         print('Server Started at PORT:', str(port))
         print('**********************************')
         print('\n\n\n')
-        
+
         server.serve_forever()

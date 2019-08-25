@@ -42,7 +42,8 @@ class Header():
                         'js': 'application/javascript',
                         'json': 'application/json',
                         'gif': 'image/gif', 'svg': 'image/svg+xml',
-                        'jpeg': 'image/jpeg', 'png': 'image/png'}
+                        'jpeg': 'image/jpeg', 'png': 'image/png',
+                        'ico': 'image/ico'}
         self.functions = {'Host': self._getHost, 'X-Powered-By': self._powered,
                           'Cookie': self._getCookies}
         self.cookies = {}
@@ -61,9 +62,13 @@ class Header():
         # 'user-1': {"user-1": "Jesus", "path": "/path/about/",
         #   "expires": "Fri, 25-May-2018 09:46:00 GMT"}}
 
+        if self.requested_file == '':
+            return ''
+
         # calculation of the data the we will be sending
         self.Files = FileSystem()
         self.Files.request_method = self.request_method
+        self._extension = self.Files._file_extension
         self.Files.post_data = self.requested_body
         self.Files.search(self.requested_file)
 
@@ -73,7 +78,6 @@ class Header():
         self._extension = self.Files._file_extension
         self._contentType()
         self.send_headers['Content-Length'] = str(self._contentLength())
-        print('send', self.send_headers)
         status_code = self.Files.status_code
 
         # status code
@@ -118,6 +122,9 @@ class Header():
 
         # convert from bytes to text
         self.raw_headers = str(header, 'ascii')
+        
+        if self.raw_headers == '':
+            return 1
 
         # break
         splited = self.raw_headers.split('\r\n\r\n')
@@ -295,9 +302,8 @@ class Header():
         # if its a css file
         if self._extension in ['css', 'js']:
             pass
-
-        # if it is an image
-        elif self._extMap[self._extension].find('image/') > -1:
+        
+        elif 'image' in self._extMap[self._extension]:
             pass
 
         else:

@@ -52,9 +52,12 @@ class FileSystem():
         # whether or not is a query we are still taken the file only
         self._actual_file = splits[0]
 
-        # the extension will be in the last one
-        split = self._actual_file.split('.')
-        self._file_extension = split[-1]
+        if self._actual_file == '/':
+            pass
+        else:
+            # the extension will be in the last one
+            split = self._actual_file.split('.')
+            self._file_extension = split[-1]
 
 
     def search(self, file):
