@@ -44,7 +44,7 @@ class Peter(socketserver.BaseRequestHandler):
         # The data that the browser came with
         # basically the request handler
         print(self.data)
-        
+
         print('\n\n')
 
         # Initialise the header class
@@ -94,5 +94,5 @@ if __name__ == "__main__":
         print('Server Started at PORT:', str(port))
         print('**********************************')
         print('\n\n\n')
-        
+
         server.serve_forever()
