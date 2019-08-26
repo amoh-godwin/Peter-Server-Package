@@ -39,6 +39,7 @@ class Header():
         self.data = ''
         self._extMap = {'html': 'text/html', 'htm': 'text/html',
                         'php': 'text/html', 'css': 'text/css',
+                        'py': 'text/html',
                         'js': 'application/javascript',
                         'json': 'application/json',
                         'gif': 'image/gif', 'svg': 'image/svg+xml',

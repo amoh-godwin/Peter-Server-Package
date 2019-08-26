@@ -4,6 +4,7 @@ import os
 import chardet
 from external import PHPRunner
 from css_fs import CssRunner
+from py_fs import PyRunner
 
 class FileSystem():
 
@@ -237,6 +238,17 @@ class FileSystem():
 
 
         # check the file extension for php
+        if self._file_extension == 'py':
+
+            pyrunner = PyRunner()
+            read = pyrunner.start(file)
+            
+            # return values
+            self.contentLength = len(read)
+            self.encoding = pyrunner.encoding
+            self.data = read
+            return
+
         if self._file_extension == 'php':
 
             # setting the directory to directory
@@ -254,7 +266,6 @@ class FileSystem():
             self.data = read
             return
 
-
         elif self._file_extension == 'css':
 
             # The file is a css file
@@ -264,7 +275,6 @@ class FileSystem():
             self.data = read
             return
 
-
         else:
 
             # file is not php
@@ -273,7 +283,6 @@ class FileSystem():
 
                 # set length of the content
                 self.contentlength = len(read)
-
 
         # continue with encoding
         detection = chardet.detect(read)
