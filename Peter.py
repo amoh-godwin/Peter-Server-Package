@@ -78,7 +78,7 @@ if __name__ == "__main__":
     if len(sys.argv) > 1:
 
         # set as the new port
-        port = sys.argv[1]
+        port = int(sys.argv[1])
 
     else:
 
