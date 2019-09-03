@@ -9,8 +9,6 @@ import socketserver
 
 import sys
 
-import dev_installs
-
 from headers import Header
 
 class Peter(socketserver.BaseRequestHandler):
@@ -69,9 +67,6 @@ class ThreadTCP(socketserver.ThreadingMixIn, socketserver.TCPServer):
 
 
 if __name__ == "__main__":
-
-    # For development mode
-    dev_installs.install()
     
     # if user passed in any other value
     # should be in the second index
