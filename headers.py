@@ -29,7 +29,7 @@ class Header():
         self._content_length = 0
         self.raw_headers = ""
         self.headerPair = {}
-        self.send_headers = {'Server': 'Peter (Python/3.6.1)',
+        self.send_headers = {'Server': 'Peter (Python/3.7)',
                              'X-Frame-Options': 'SAMEORIGIN',
                              'Accept-Ranges': 'bytes',
                              'Content-Length': '0',
