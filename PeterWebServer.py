@@ -35,15 +35,16 @@ class Peter(socketserver.BaseRequestHandler):
 
         current_thread = threading.current_thread()
         #print(current_thread.name)
+        
+        useful = str(self.data, 'utf-8')
+        line = useful.splitlines()
+        if len(line) > 0:
+            req = line[0]
+        else:
+            req = ""
 
         # This would be used for logging
-        print("{} requested".format(self.client_address[0]))
-
-        # The data that the browser came with
-        # basically the request handler
-        print(self.data)
-
-        print('\n\n')
+        print("{} [Request ] {}".format(self.client_address[0], req))
 
         # Initialise the header class
         peter = Header()
@@ -55,8 +56,17 @@ class Peter(socketserver.BaseRequestHandler):
         # to the browser
         resp = Header.computeResponse(peter)
 
-        # print resp
-        print('\n\n\n', resp, '\n\n\n')
+        if len(resp) < 1:
+            resp = b''
+
+        # calculation of user friendly log message
+        usess = str(resp, 'utf-8')
+        lines = usess.splitlines()
+        if len(lines) > 0:
+            status = lines[0].split(" ", 1)[1]
+        else:
+            status = ""
+        print('{} [Response] {}'.format(self.client_address[0], status))
 
         # Send the complete data to the browser
         self.request.sendall(resp)
