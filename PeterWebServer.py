@@ -76,6 +76,38 @@ class ThreadTCP(socketserver.ThreadingMixIn, socketserver.TCPServer):
     pass
 
 
+def _test_another_port(HOST, PORT):
+
+    # Using fallback Peter Port
+    _run_server(HOST, 7773)
+
+
+def _run_server(HOST, PORT):
+
+    try:
+        with ThreadTCP((HOST, PORT), Peter) as server:
+            pass
+
+    except:
+        # Test for another port
+        print('Error: Wrong port, testing another port')
+        _test_another_port(HOST, PORT)
+
+    else:
+        try:
+            with ThreadTCP((HOST, PORT), Peter) as server:
+                # interrupt the program with Ctrl-C
+        
+                print('\n')
+                print('Server Started at PORT:', str(PORT))
+                print('**********************************')
+                print('\n\n')
+        
+                server.serve_forever()
+
+        except KeyboardInterrupt:
+            print('Keyborad Interrupt, Server has exited')
+
 if __name__ == "__main__":
     
     # if user passed in any other value
@@ -92,12 +124,5 @@ if __name__ == "__main__":
 
     HOST, PORT = "localhost", port
 
-    with ThreadTCP((HOST, PORT), Peter) as server:
-        # interrupt the program with Ctrl-C
-
-        print('\n\n')
-        print('Server Started at PORT:', str(port))
-        print('**********************************')
-        print('\n\n\n')
-
-        server.serve_forever()
+    # Run the Server
+    _run_server(HOST, PORT)
