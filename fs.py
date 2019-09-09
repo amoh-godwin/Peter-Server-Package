@@ -2,6 +2,7 @@
 # To You Alone Oh Father, I commit myself
 import os
 import chardet
+from time import time
 from external import PHPRunner
 from css_fs import CssRunner
 from py_fs import PyRunner
@@ -34,7 +35,33 @@ class FileSystem():
         self._depth = 0
         self.SCRIPTS_LOCATION = "C:/Deuteronomy Works/Peter/_scripts"
         self._file_extension = 'html'
-        self.mime_types = {'image': ["png", "jpeg", "gif"]}
+        self.mime_image_type = [
+                                "png", "jpeg", "gif", "tiff",
+                                "aces", "avci", "avcs", "bmp", "cgm",
+                                "dicom-rle", "emf", "example", "fits",
+                                "g3fax", "heic", "heic-sequence", "heif",
+                                "heif-sequence", "hej2k", "hsj2", "ief", "jls",
+                                "jp2", "jph", "jphc", "jpm", "jpx",
+                                "jxr", "jxrA", "jxrS", "jxs",
+                                "jxsc", "jxsi", "jxss", "ktx",
+                                "naplps", "prs.btif", "prs.pti", "pwg-raster",
+                                "svg+xml", "t38", "tiff-fx",
+                                "vnd.adobe.photoshop",
+                                "vnd.airzip.accelerator.azv", "vnd.cns.inf2",
+                                "vnd.dece.graphic", "vnd.djvu", "vnd.dwg",
+                                "vnd.dxf", "vnd.dvb.subtitle",
+                                "vnd.fastbidsheet", "vnd.fpx", "vnd.fst",
+                                "vnd.fujixerox.edmics-mmr",
+                                "vnd.fujixerox.edmics-rlc",
+                                "vnd.globalgraphics.pgb", "vnd.microsoft.icon",
+                                "vnd.mix", "vnd.ms-modi",
+                                "vnd.mozilla.apng", "vnd.net-fpx",
+                                "vnd.radiance", "vnd.sealed.png",
+                                "vnd.sealedmedia.softseal.gif",
+                                "vnd.sealedmedia.softseal.jpg", "vnd.svf",
+                                "vnd.tencent.tap", "vnd.valve.source.texture",
+                                "vnd.wap.wbmp", "vnd.xiff", "vnd.zbrush.pcx",
+                                "wmf", "emf"]
         self.data = ''
         self.encoding = 'ascii'
         self.contentLength = 0
@@ -237,6 +264,7 @@ class FileSystem():
 
     def _data(self, file):
 
+        start_time = time()
         # check the file extension for php
         if self._file_extension == 'py':
 
@@ -275,8 +303,12 @@ class FileSystem():
             self.data = read
             return
 
-        elif self._file_extension in self.mime_types['image']:
+        elif self._file_extension in self.mime_image_type:
 
+            end_time = time()
+            print(end_time)
+            space = end_time - start_time
+            print('sec: ', space)
             # It is an image file defined in self.mime_types['image']
             with open(file, 'rb') as bbin:
                 read = bbin.read()
