@@ -45,7 +45,7 @@ class FileSystem():
                                 "jxr", "jxrA", "jxrS", "jxs",
                                 "jxsc", "jxsi", "jxss", "ktx",
                                 "naplps", "prs.btif", "prs.pti", "pwg-raster",
-                                "svg+xml", "t38", "tiff-fx",
+                                "svg", "t38", "tiff-fx",
                                 "vnd.adobe.photoshop",
                                 "vnd.airzip.accelerator.azv", "vnd.cns.inf2",
                                 "vnd.dece.graphic", "vnd.djvu", "vnd.dwg",
