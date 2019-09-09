@@ -28,6 +28,7 @@ class Header():
         self.Files = FileSystem()
         self._content_length = 0
         self.raw_headers = ""
+        self.status_code = 0
         self.headerPair = {}
         self.send_headers = {'Server': 'Peter (Python/3.7)',
                              'X-Frame-Options': 'SAMEORIGIN',
@@ -79,10 +80,10 @@ class Header():
         self._extension = self.Files._file_extension
         self._contentType()
         self.send_headers['Content-Length'] = str(self._contentLength())
-        status_code = self.Files.status_code
+        self.status_code = self.Files.status_code
 
         # status code
-        string += self._status(status_code)
+        string += self._status(self.status_code)
 
         # the actual date this whole event was completed
         string += self._date()
@@ -110,7 +111,10 @@ class Header():
             return bytes(string + '\r\n', self._encoding)
 
         else:
-            total = bytes(string + '\r\n' + self.data, self._encoding)
+            if type(self.data) == str:
+                total = bytes(string + '\r\n' + self.data, self._encoding)
+            else:
+                total = bytes(string, self._encoding) + self.data
             return total
 
     def getRequest(self, header):
@@ -238,10 +242,14 @@ class Header():
 
     def _contentLength(self):
 
-        ddata = bytes(self.data, self._encoding)
+        if type(self.data):
+            self._content_length = len(self.data)
 
-        # len of data from outside
-        self._content_length = len(ddata) + 2
+        else:
+            ddata = bytes(self.data, self._encoding)
+    
+            # len of data from outside
+            self._content_length = len(ddata) + 2
 
         string = 'Content-Length: '
 
@@ -250,6 +258,7 @@ class Header():
             string = ''
         else:
             string += str(self._content_length) + '\r\n'
+
         return self._content_length
 
     def _cookie(self, cookies=None):

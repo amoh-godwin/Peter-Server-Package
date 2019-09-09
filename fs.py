@@ -34,6 +34,7 @@ class FileSystem():
         self._depth = 0
         self.SCRIPTS_LOCATION = "C:/Deuteronomy Works/Peter/_scripts"
         self._file_extension = 'html'
+        self.mime_types = {'image': ["png", "jpeg", "gif"]}
         self.data = ''
         self.encoding = 'ascii'
         self.contentLength = 0
@@ -236,7 +237,6 @@ class FileSystem():
 
     def _data(self, file):
 
-
         # check the file extension for php
         if self._file_extension == 'py':
 
@@ -275,6 +275,15 @@ class FileSystem():
             self.data = read
             return
 
+        elif self._file_extension in self.mime_types['image']:
+
+            # It is an image file defined in self.mime_types['image']
+            with open(file, 'rb') as bbin:
+                read = bbin.read()
+            self.data = read
+            self.contentLength = len(read)
+            return
+
         else:
 
             # file is not php
@@ -284,8 +293,18 @@ class FileSystem():
                 # set length of the content
                 self.contentlength = len(read)
 
-        # continue with encoding
-        detection = chardet.detect(read)
+        # Continue with encoding detection
+        ## Use only 128 bytes to speed things up
+        count = 0
+        to_send_bytes = b''
+        split_bytes = read.splitlines(keepends=True)
+        for each in split_bytes:
+            if count < 128:
+                to_send_bytes += each
+                count += 1
+
+        detection = chardet.detect(to_send_bytes)
+        print(detection)
 
         if detection['confidence'] > 0.99:
             self.encoding = detection['encoding']

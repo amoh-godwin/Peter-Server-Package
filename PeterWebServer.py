@@ -50,23 +50,16 @@ class Peter(socketserver.BaseRequestHandler):
         peter = Header()
 
         # send the request to be proccesed
-        Header.getRequest(peter, self.data)
+        peter.getRequest(self.data)
 
         # This is the response from the server
         # to the browser
-        resp = Header.computeResponse(peter)
+        resp = peter.computeResponse()
 
         if len(resp) < 1:
             resp = b''
 
-        # calculation of user friendly log message
-        usess = str(resp, 'utf-8')
-        lines = usess.splitlines()
-        if len(lines) > 0:
-            status = lines[0].split(" ", 1)[1]
-        else:
-            status = ""
-        print('{} [Response] {}'.format(self.client_address[0], status))
+        print('{} [Response] {}'.format(self.client_address[0], str(peter.status_code)))
 
         # Send the complete data to the browser
         self.request.sendall(resp)
