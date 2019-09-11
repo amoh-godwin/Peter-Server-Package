@@ -35,6 +35,56 @@ class FileSystem():
         self._depth = 0
         self.SCRIPTS_LOCATION = "C:/Deuteronomy Works/Peter/_scripts"
         self._file_extension = 'html'
+        self.mime_font_type = [
+                'collection', 'otf', 'sfnt', 'ttf', 'woff', 'woff2']
+
+        self.mime_model_type = [
+                '3mf', 'example', 'gltf-binary', 'gltf+json', 'iges', 'mesh',
+                'stl', 'vnd.collada+xml', 'vnd.dwf', 'vnd.flatland.3dml',
+                'vnd.gdl', 'vnd.gs-gdl', 'vnd.gtw', 'vnd.moml+xml', 'vnd.mts',
+                'vnd.opengex', 'vnd.parasolid.transmit.binary',
+                'vnd.parasolid.transmit.text',
+                'vnd.rosette.annotated-data-model', 'vnd.usdz+zip',
+                'vnd.valve.source.compiled-map', 'vnd.vtu', 'vrml', 'x3d-vrml',
+                'x3d+fastinfoset', 'x3d+xml']
+
+        self.mime_multipart_type = [
+                'alternative', 'appledouble', 'byteranges','digest',
+                'encrypted', 'example', 'form-data', 'header-set', 'mixed',
+                'multilingual', 'parallel', 'related', 'report', 'signed',
+                'vnd.bint.med-plus', 'voice-message', 'x-mixed-replace']
+
+        self.mime_message_type = [
+                'CPIM', 'delivery-status', 'disposition-notification',
+                'example', 'external-body', 'feedback-report', 'global',
+                'global-delivery-status', 'global-disposition-notification',
+                'global-headers', 'http', 'imdn+xml', 'partial', 'rfc822',
+                's-http', 'sip', 'sipfrag', 'tracking-status', 'vnd.wfa.wsc']
+
+        self.mime_text_type = [
+                '1d-interleaved-parityfec', 'cache-manifest', 'calendar',
+                'css', 'csv', 'csv-schema', 'dns', 'encaprtp', 'enriched',
+                'example', 'flexfec', 'fwdred', 'grammar-ref-list', 'html',
+                'jcr-cnd', 'markdown', 'mizar', 'n3', 'parameters','parityfec',
+                'plain', 'provenance-notation', 'prs.fallenstein.rst',
+                'prs.lines.tag', 'prs.prop.logic', 'raptorfec', 'RED',
+                'rfc822-headers', 'richtext', 'rtf', 'rtp-enc-aescm128',
+                'rtploopback', 'rtx', 'sgml', 'strings', 't140',
+                'tab-separated-values', 'troff', 'turtle', 'ulpfec',
+                'uri-list', 'vcard', 'vnd.a', 'vnd.abc', 'vnd.ascii-art',
+                'vnd.curl', 'vnd.debian.copyright', 'vnd.DMClientScript',
+                'vnd.dvb.subtitle', 'vnd.esmertec.theme-descriptor', 'vnd.fly',
+                'vnd.fmi.flexstor', 'vnd.gml', 'vnd.graphviz', 'vnd.hgl',
+                'vnd.in3d.3dml', 'vnd.in3d.spot', 'vnd.IPTC.NewsML',
+                'vnd.IPTC.NITF', 'vnd.latex-z', 'vnd.motorola.reflex',
+                'vnd.ms-mediapackage', 'vnd.net2phone.commcenter.command',
+                'vnd.radisys.msml-basic-layout', 'vnd.senx.warpscript',
+                'vnd.si.uricatalogue - OBSOLETED by request',
+                'vnd.sun.j2me.app-descriptor', 'vnd.sosi',
+                'vnd.trolltech.linguist', 'vnd.wap.si', 'vnd.wap.sl',
+                'vnd.wap.wml', 'vnd.wap.wmlscript', 'xml',
+                'xml-external-parsed-entity']
+
         self.mime_video_type = [
                 '1d-interleaved-parityfec', '3gpp', '3gpp2'
                 '3gpp-tt', 'BMPEG', 'BT656', 'CelB', 'DV', 'encaprtp',
@@ -61,6 +111,7 @@ class FileSystem():
                 'vnd.sealed.mpeg1', 'vnd.sealed.mpeg4', 'vnd.sealed.swf',
                 'vnd.sealedmedia.softseal.mov', 'vnd.uvvu.mp4',
                 'vnd.youtube.yt', 'vnd.vivo', 'VP8']
+
         self.mime_app_type = [
                 "1d-interleaved-parityfec", "3gpdash-qoe-report+xml", "3gpp-ims+xml",
                 "A2L", "activemessage", "activity+json", "alto-costmap+json", "alto-costmapfilter+json",
