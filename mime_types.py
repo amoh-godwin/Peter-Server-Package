@@ -5,7 +5,7 @@ Created on Wed Sep 11 13:05:13 2019
 @author: Ampofo
 """
 mime_image_aux_name = {'png': 'png', 'jpeg': 'jpeg', 'jpg': 'jpeg',
-                       'gif': 'gif', 'tiff': 'tiff',
+                       'gif': 'gif', 'tiff': 'tiff', 'ico': 'vnd.microsoft.ico',
                        'psd': 'vnd.adobe.photoshop'}
 mime_image_type = [
                 "png", "jpeg", "gif", "tiff",
