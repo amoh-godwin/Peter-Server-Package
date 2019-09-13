@@ -353,14 +353,18 @@ class Header():
 
             encoding = self._encoding
 
+        # If content type has already been set
+        if self.Files.mime_type:
+            self.send_headers['Content-Type'] = self.Files.mime_type
+
         # find the extension in the extension map
-        if self._extension in self._extMap:
+        elif self._extension in self._extMap:
 
             # add the corresponding format to the string
             self.send_headers['Content-Type'] = self._extMap[self._extension]
 
         # if its a css file
-        if self._extension in ['css', 'js']:
+        elif self._extension in ['css', 'js']:
             pass
         
         elif 'image' in self._extMap[self._extension]:
@@ -371,4 +375,4 @@ class Header():
             # it is not a css file
             self.send_headers['Content-Type'] += '; charset=' + encoding
 
-        return  # string + "\r\n"
+        return

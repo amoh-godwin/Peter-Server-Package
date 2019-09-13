@@ -6,9 +6,12 @@ from time import time
 from external import PHPRunner
 from css_fs import CssRunner
 from py_fs import PyRunner
-from mime_types import mime_font_type, mime_audio_type, mime_model_type,
-mime_multipart_type, mime_message_type, mime_text_type, mime_video_type,
-mime_app_type, mime_image_type
+from mime_types import mime_font_type, mime_font_aux_name, \
+mime_audio_type, mime_audio_aux_name, mime_model_type, mime_model_aux_name, \
+mime_multipart_type, mime_multipart_aux_name, mime_message_type, \
+mime_message_aux_name, mime_text_type, mime_text_aux_name, \
+mime_video_type, mime_video_aux_name, \
+mime_app_type, mime_app_aux_name, mime_image_type, mime_image_aux_name
 
 class FileSystem():
 
@@ -38,6 +41,7 @@ class FileSystem():
         self._depth = 0
         self.SCRIPTS_LOCATION = "C:/Deuteronomy Works/Peter/_scripts"
         self._file_extension = 'html'
+        self.mime_type = ''
         self.mime_font_type = mime_font_type
         self.mime_audio_type = mime_audio_type
         self.mime_model_type = mime_model_type
@@ -241,15 +245,20 @@ class FileSystem():
         else:
 
             # file extension sure contains gibberish
-            #self._file_extension = 'php' 
+            #self._file_extension = 'php'
 
             # htacces or just go ahead to list dir
             self._data(self.SCRIPTS_LOCATION + '/dir.html' )
 
+    def _base_read(self, file):
+
+        with open(file, 'rb') as bbin:
+                read = bbin.read()
+        self.data = read
+        self.contentLength = len(read)
 
     def _data(self, file):
 
-        start_time = time()
         # check the file extension for php
         if self._file_extension == 'py':
 
@@ -262,7 +271,7 @@ class FileSystem():
             self.data = read
             return
 
-        if self._file_extension == 'php':
+        elif self._file_extension == 'php':
 
             # setting the directory to directory
             phpRunner = PHPRunner()
@@ -270,7 +279,8 @@ class FileSystem():
             # run with php and with the query
             phpRunner.encoding = self.encoding
             phpRunner.post_data = self.post_data
-            read = phpRunner.Start(file, self.query_string, self.request_method)
+            read = phpRunner.Start(file,
+                                   self.query_string, self.request_method)
             self.additional_head_str = phpRunner.addition_head_str
 
             # set length of the content
@@ -279,7 +289,16 @@ class FileSystem():
             self.data = read
             return
 
-        elif self._file_extension == 'css':
+        elif self._file_extension in mime_text_aux_name:
+
+            self._mime_type = mime_text_aux_name[self._file_extension]
+            Css = CssRunner()
+            read = Css.Read(file)
+            self.contentLength = len(read)
+            self.data = read
+            return
+
+        elif self._file_extension in self.mime_text_type:
 
             # The file is a css file
             Css = CssRunner()
@@ -288,17 +307,85 @@ class FileSystem():
             self.data = read
             return
 
-        elif self._file_extension in self.mime_image_type:
+        elif self._file_extension in mime_image_aux_name:
+            # set correct content type here
+            self.mime_type = "image/" + mime_image_aux_name[self._file_extension]
+            self._base_read(file)
+            return
 
-            end_time = time()
-            print(end_time)
-            space = end_time - start_time
-            print('sec: ', space)
-            # It is an image file defined in self.mime_types['image']
-            with open(file, 'rb') as bbin:
-                read = bbin.read()
-            self.data = read
-            self.contentLength = len(read)
+        elif self._file_extension in mime_font_aux_name:
+            self.mime_type = "font/" + mime_font_aux_name[self._file_extension]
+            self._base_read(file)
+            return
+
+        elif self._file_extension in mime_audio_aux_name:
+                self.mime_type = "audio/" + mime_audio_aux_name[self._file_extension]
+                self._base_read(file)
+                return
+
+        elif self._file_extension in mime_app_aux_name:
+            self.mime_type = "application/" + mime_app_aux_name[self._file_extension]
+            self._base_read(file)
+            return
+
+        elif self._file_extension in mime_video_aux_name:
+            self.mime_type = "video/" + mime_video_aux_name[self._file_extension]
+            self._base_read(file)
+            return
+
+        elif self._file_extension in mime_multipart_aux_name:
+            self.mime_type = "multipart/" + mime_multipart_aux_name[self._file_extension]
+            self._base_read(file)
+            return
+
+        elif self._file_extension in mime_message_aux_name:
+            self.mime_type = "message/" + mime_message_aux_name[self._file_extension]
+            self._base_read(file)
+            return
+
+        elif self._file_extension in mime_model_aux_name:
+            self.mime_type = "model/" + mime_model_aux_name[self._file_extension]
+            self._base_read(file)
+            return
+
+        elif self._file_extension in self.mime_image_type:
+            self.mime_type = "image/" + self._file_extension
+            self._base_read(file)
+            return
+
+        elif self._file_extension in self.mime_font_type:
+            self.mime_type = "font/" + self._file_extension
+            self._base_read(file)
+            return
+
+        elif self._file_extension in self.mime_audio_type:
+            self.mime_type = "audio/" + self._file_extension
+            self._base_read(file)
+            return
+
+        elif self._file_extension in self.mime_app_type:
+            self.mime_type = "app/" + self._file_extension
+            self._base_read(file)
+            return
+
+        elif self._file_extension in self.mime_video_type:
+            self.mime_type = "video/" + self._file_extension
+            self._base_read(file)
+            return
+
+        elif self._file_extension in self.mime_multipart_type:
+            self.mime_type = "multipart/" + self._file_extension
+            self._base_read(file)
+            return
+
+        elif self._file_extension in self.mime_message_type:
+            self.mime_type = "message/" + self._file_extension
+            self._base_read(file)
+            return
+
+        elif self._file_extension in self.mime_model_type:
+            self.mime_type = "model/" + self._file_extension
+            self._base_read(file)
             return
 
         else:
@@ -321,7 +408,6 @@ class FileSystem():
                 count += 1
 
         detection = chardet.detect(to_send_bytes)
-        print(detection)
 
         if detection['confidence'] > 0.99:
             self.encoding = detection['encoding']
@@ -337,5 +423,4 @@ class FileSystem():
             self.encoding = 'ascii'
 
         self.data = read.decode(self.encoding)
-
         return
