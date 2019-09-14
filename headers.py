@@ -16,26 +16,24 @@ class Header():
 
     """
 
-    def __init__(self):
+    def __init__(self, parent_folder, url):
         super.__self__
-        self.host = ''
+        self.parent_folder = parent_folder
+        self.host = url
         self.port = 0
         self.request_method = ''
         self.requested_file = ''
         self.requested_body = ''
         self._encoding = 'utf-8'
         self._extension = ''
-        self.Files = FileSystem()
+        self.Files = FileSystem(self.parent_folder, self.host)
         self._content_length = 0
         self.raw_headers = ""
         self.status_code = 0
         self.headerPair = {}
-        self.status_stat = {200: 'OK',
-                            300: 'NOT FOUND',
-                            301: 'MOVED PERMANENTLY',
-                            302: 'FOUND',
-                            303: 'SEE OTHER',
-                            304: 'NOT MODIFIED',
+        self.status_stat = {
+                200: 'OK', 300: 'NOT FOUND', 301: 'MOVED PERMANENTLY',
+                302: 'FOUND', 303: 'SEE OTHER', 304: 'NOT MODIFIED',
                             307: 'Temporary Redirect',
                             308: 'Permanent Redirect',
                             400: 'Bad Request',
@@ -140,7 +138,7 @@ class Header():
             return ''
 
         # calculation of the data the we will be sending
-        self.Files = FileSystem()
+        self.Files = FileSystem(self.parent_folder, self.host)
         self.Files.request_method = self.request_method
         self._extension = self.Files._file_extension
         self.Files.post_data = self.requested_body
@@ -175,7 +173,7 @@ class Header():
 
         # ----
         if self.send_headers['Content-Type'] == 'text/html':
-            string += str(self.data)
+            string += str(self.data, self._encoding)
             return bytes(string + '\r\n', self._encoding)
 
         elif self.send_headers['Content-Type'] == 'text/css':

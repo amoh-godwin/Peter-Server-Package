@@ -11,6 +11,8 @@ import sys
 
 from headers import Header
 
+from settings import Sets
+
 class Peter(socketserver.BaseRequestHandler):
 
     """
@@ -47,7 +49,8 @@ class Peter(socketserver.BaseRequestHandler):
         print("{} [Request ] {}".format(self.client_address[0], req))
 
         # Initialise the header class
-        peter = Header()
+        sets = Sets()
+        peter = Header(sets.parent_folder, sets.addr)
 
         # send the request to be proccesed
         peter.getRequest(self.data)

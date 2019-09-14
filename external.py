@@ -8,14 +8,18 @@ class PHPRunner():
 
 
     """
+    Handles the running of php files
     """
 
 
-    def __init__(self):
+    def __init__(self, parent_folder, url):
         super.__self__
         self.cwd = os.getcwd()
-        self.directory = "C:/Deuteronomy Works/Peter/PHP/php-7.2.5"
-        self.server_dir = "C:/Deuteronomy Works/Peter/Server/"
+        self.parent_folder = parent_folder
+        self.host = url
+        self.directory = os.path.join(self.parent_folder, "bin",
+                                      "PHP", "php-7.2.5")
+        self.server_dir = os.path.join(self.parent_folder, "Server")
         self.queries = ''
         self.method = ''
         self.post_data = ''
@@ -26,10 +30,10 @@ class PHPRunner():
         self.file_name = ''
         self.script_name = ''
         self.path_info = '/'
-        self.server_name = 'localhost:5555'
+        self.server_name = self.host.replace('http://', '')
         self.server_protocol = 'HTTP/1.1'
         self.request_uri = ''
-        self.http_host = 'localhost:5555'
+        self.http_host = self.server_name
         self._content_length = 0
         self.echo = ''
         self.get_stmt = ""

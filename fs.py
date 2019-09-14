@@ -25,12 +25,14 @@ class FileSystem():
     """
 
 
-    def __init__(self):
+    def __init__(self, parent_folder, url):
 
 
         super.__self__
         self.request_method = ''
-        self.Default_LOCATION = "C:/Deuteronomy Works/Peter/Server"
+        self.parent_folder = parent_folder
+        self.host = url
+        self.Default_LOCATION = os.path.join(self.parent_folder, "Server")
         self.status_code = 200
         self.additional_head_str = {}
         self._actual_file = ''
@@ -39,7 +41,7 @@ class FileSystem():
         self._no = 0
         self._steps = []
         self._depth = 0
-        self.SCRIPTS_LOCATION = "C:/Deuteronomy Works/Peter/_scripts"
+        self.SCRIPTS_LOCATION = os.path.join(self.parent_folder, "_scripts")
         self._file_extension = 'html'
         self.mime_type = ''
         self.mime_font_type = mime_font_type
@@ -138,7 +140,6 @@ class FileSystem():
 
 
     def _crawl(self, path, needle):
-
 
         folders = os.listdir(path)
         if needle in folders:
@@ -273,13 +274,14 @@ class FileSystem():
         elif self._file_extension == 'php':
 
             # setting the directory to directory
-            phpRunner = PHPRunner()
+            phpRunner = PHPRunner(self.parent_folder, self.host)
 
             # run with php and with the query
             phpRunner.encoding = self.encoding
             phpRunner.post_data = self.post_data
             read = phpRunner.Start(file,
-                                   self.query_string, self.request_method)
+                                   self.query_string,
+                                   self.request_method)
             self.additional_head_str = phpRunner.addition_head_str
 
             # set length of the content
