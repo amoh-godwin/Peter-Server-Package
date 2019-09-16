@@ -40,7 +40,6 @@ def test_computeResponse(filename, cont_type):
             header_pair[splits[0]] = splits[1]
 
     assert type(resp) == bytes
-    assert header_pair['Server'] == 'Peter (Python/3.7)'
     assert int(header_pair['Content-Length']) == len(body_bytes)
     assert header_pair['Content-Type'] == cont_type
 
@@ -69,23 +68,6 @@ def test__date():
     pass
     # head.__date()
 
-
-def test__contentLength():
-    pass
-    # head._contentLen()
-
-
 def test__cookie():
     pass
     # head
-
-
-"""@pytest.mark.parametrize('extension,cont_type', [
-        ('html', 'text/html; charset=utf-8'),
-        ('css', 'text/css'),
-        ('js', 'application/javascript')])
-def test__contentType(extension, cont_type):
-    head._extension = extension
-    head.Files.mime_type
-    head._contentType()
-    assert head.send_headers['Content-Type'] == cont_type"""
