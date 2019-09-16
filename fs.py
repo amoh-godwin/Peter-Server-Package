@@ -292,27 +292,25 @@ class FileSystem():
 
         elif self._file_extension in mime_text_aux_name:
 
-            self._mime_type = 'text/' + mime_text_aux_name[self._file_extension]
-            if self._mime_type == 'text/html':
-                self._mime_type += '; charset=' + self.encoding
+            self.mime_type = 'text/' + mime_text_aux_name[self._file_extension]
 
             Css = CssRunner()
-            read = Css.Read(file)
-            self.contentLength = len(read)
-            self.data = read
+            Css.Read(file)
+            self.contentLength = Css.content_length
+            self.data = Css.read
+            self.encoding = Css.encoding
             return
 
         elif self._file_extension in self.mime_text_type:
 
             # The file is a text file
-            self._mime_type = 'text/' + self._file_extension
-            if self._mime_type == 'text/html':
-                self._mime_type += '; charset=' + self.encoding
+            self.mime_type = 'text/' + self._file_extension
 
             Css = CssRunner()
-            read = Css.Read(file)
-            self.contentLength = len(read)
-            self.data = read
+            Css.Read(file)
+            self.contentLength = Css.content_length
+            self.data = Css.read
+            self.encoding = Css.encoding
             return
 
         elif self._file_extension in mime_image_aux_name:

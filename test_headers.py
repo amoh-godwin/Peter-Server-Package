@@ -1,25 +1,27 @@
 # -*- coding: utf-8 -*-
 import pytest
 from headers import Header
+from settings import Sets
 
-head = Header()
+sets = Sets()
+head = Header(sets.parent_folder, sets.addr)
 
 # set varibles
 
 
 @pytest.mark.parametrize('filename,cont_type', [
-        ('/_tests/index.html', 'text/html; charset=utf-8'),
+        ('/_tests/index.html', 'text/html; charset=ascii'),
         ('/_tests/index.css', 'text/css'),
         ('/_tests/main.js', 'application/javascript'),
-        ('/_tests/', 'text/html; charset=utf-8')])
+        ('/_tests/', 'text/html; charset=ascii')])
 def test_computeResponse(filename, cont_type):
     head.requested_file = filename
     resp = head.computeResponse()
 
-    str_resp = str(resp, 'utf-8')
+    str_resp = str(resp, 'UTF-8')
     splitted = str_resp.split('\r\n\r\n')
     body_str = splitted[-1]
-    body_bytes = bytes(body_str, 'utf-8')
+    body_bytes = bytes(body_str, 'UTF-8')
     header_str = splitted[0]
     header_pair = {}
 
@@ -38,7 +40,7 @@ def test_computeResponse(filename, cont_type):
             header_pair[splits[0]] = splits[1]
 
     assert type(resp) == bytes
-    assert header_pair['Server'] == 'Peter (Python/3.6.1)'
+    assert header_pair['Server'] == 'Peter (Python/3.7)'
     assert int(header_pair['Content-Length']) == len(body_bytes)
     assert header_pair['Content-Type'] == cont_type
 
@@ -78,11 +80,12 @@ def test__cookie():
     # head
 
 
-@pytest.mark.parametrize('extension,cont_type', [
+"""@pytest.mark.parametrize('extension,cont_type', [
         ('html', 'text/html; charset=utf-8'),
         ('css', 'text/css'),
         ('js', 'application/javascript')])
 def test__contentType(extension, cont_type):
     head._extension = extension
+    head.Files.mime_type
     head._contentType()
-    assert head.send_headers['Content-Type'] == cont_type
+    assert head.send_headers['Content-Type'] == cont_type"""

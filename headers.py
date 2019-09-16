@@ -24,7 +24,7 @@ class Header():
         self.request_method = ''
         self.requested_file = ''
         self.requested_body = ''
-        self._encoding = 'utf-8'
+        self._encoding = 'UTF-8'
         self._extension = ''
         self.Files = FileSystem(self.parent_folder, self.host)
         self._content_length = 0
@@ -147,6 +147,7 @@ class Header():
         # All variables
         self.data = self.Files.data
         self._encoding = self.Files.encoding
+        self._content_length = self.Files.contentLength
         self._extension = self.Files._file_extension
         self._contentType()
         self.send_headers['Content-Length'] = str(self._contentLength())
@@ -172,20 +173,11 @@ class Header():
         string += '\r\n'
 
         # ----
-        if self.send_headers['Content-Type'] == 'text/html':
-            string += str(self.data, self._encoding)
-            return bytes(string + '\r\n', self._encoding)
-
-        elif self.send_headers['Content-Type'] == 'text/css':
-            string += str(self.data)
-            return bytes(string + '\r\n', self._encoding)
-
+        if type(self.data) == str:
+            total = bytes(string + self.data, self._encoding)
         else:
-            if type(self.data) == str:
-                total = bytes(string + '\r\n' + self.data, self._encoding)
-            else:
-                total = bytes(string, self._encoding) + self.data
-            return total
+            total = bytes(string, self._encoding) + self.data
+        return total
 
     def getRequest(self, header):
 
@@ -312,24 +304,27 @@ class Header():
 
     def _contentLength(self):
 
-        if type(self.data):
-            self._content_length = len(self.data)
-
+        if self._content_length:
+            return self._content_length
         else:
-            ddata = bytes(self.data, self._encoding)
+            if type(self.data) == bytes:
+                self._content_length = len(self.data)
     
-            # len of data from outside
-            self._content_length = len(ddata) + 2
-
-        string = 'Content-Length: '
-
-        # Now we are just continuing with the content length string
-        if 'Content-Disposition' in self.send_headers:
-            string = ''
-        else:
-            string += str(self._content_length) + '\r\n'
-
-        return self._content_length
+            else:
+                ddata = bytes(self.data, self._encoding)
+        
+                # len of data from outside
+                self._content_length = len(ddata)
+    
+            """string = 'Content-Length: '
+    
+            # Now we are just continuing with the content length string
+            if 'Content-Disposition' in self.send_headers:
+                string = ''
+            else:
+                string += str(self._content_length) + '\r\n'"""
+    
+            return self._content_length
 
     def _cookie(self, cookies=None):
 
@@ -362,20 +357,12 @@ class Header():
 
     def _contentType(self):
 
-        # if the encoding detected was ascii use utf-8 instead
-        if self._encoding == 'ascii':
-
-            # utf-8 handles a lot more
-            encoding = 'utf-8'
-
-        # use the encoding that was given by chardet
-        else:
-
-            encoding = self._encoding
-
         # If content type has already been set
         if self.Files.mime_type:
+
             self.send_headers['Content-Type'] = self.Files.mime_type
+            if self.send_headers['Content-Type'] == 'text/html':
+                self.send_headers['Content-Type'] += '; charset=' + self._encoding
 
         # find the extension in the extension map
         elif self._extension in self._extMap:
@@ -393,6 +380,6 @@ class Header():
         else:
 
             # it is not a css file
-            self.send_headers['Content-Type'] += '; charset=' + encoding
+            self.send_headers['Content-Type'] += '; charset=' + self._encoding
 
         return
