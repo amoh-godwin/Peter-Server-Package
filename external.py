@@ -17,8 +17,7 @@ class PHPRunner():
         self.cwd = os.getcwd()
         self.parent_folder = parent_folder
         self.host = url
-        self.directory = os.path.join(self.parent_folder, "bin",
-                                      "PHP", "php-7.2.5")
+        self.directory = os.path.join(self.parent_folder, "bin", "php")
         self.server_dir = os.path.join(self.parent_folder, "Server")
         self.queries = ''
         self.method = ''
