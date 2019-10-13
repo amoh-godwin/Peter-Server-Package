@@ -76,7 +76,6 @@ class Header():
                             508: 'Loop Detected',
                             510: 'Not Extended',
                             511: 'Network Authentication Required'}
-
         self.send_headers = {'Server': 'Peter (Python/3.7)',
                              'X-Frame-Options': 'SAMEORIGIN',
                              'Accept-Ranges': 'bytes',
@@ -117,9 +116,11 @@ class Header():
                         't38': 'image/t38', 'tiff-fx': 'image/tiff-fx',
                         'wmf': 'image/wmf', 'ico': 'image/ico'}
         self.functions = {'Host': self._getHost, 'X-Powered-By': self._powered,
+                          'User-Agent': self._getUserAgent,
                           'Cookie': self._getCookies}
         self.cookies = {}
         self.cookie_str = ""
+        self.user_agent_str = ""
 
     def computeResponse(self):
 
@@ -145,6 +146,7 @@ class Header():
         self.Files.post_data = self.requested_body
         self.Files.cookies = self.cookies
         self.Files.cookie_str = self.cookie_str
+        self.Files.user_agent_str = self.user_agent_str
         self.Files.search(self.requested_file)
 
         # All variables
@@ -254,6 +256,10 @@ class Header():
         # later we break it
         self.host = hostname_str
 
+    def _getUserAgent(self, user_agent_str):
+
+        self.user_agent_str = user_agent_str
+
     def _getFile(self, req_str):
 
         """
@@ -285,7 +291,6 @@ class Header():
         """
 
         # split them in main entries
-        print('_getCookies')
         self.cookie_str = cookie_str
         splits = cookie_str.split('; ')
 
@@ -355,7 +360,6 @@ class Header():
                 # add the httponly
                 string += "HttpOnly\r\n"
 
-        print(string)
         return string
 
     def _powered(self, statement):

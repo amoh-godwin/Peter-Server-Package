@@ -23,6 +23,7 @@ class PHPRunner():
         self.method = ''
         self.post_data = ''
         self.cookie_str = ""
+        self.user_agent_str = ""
         self.addition_head_str = {}
         self.redirect_status = '200'
         self.content_type = ''
@@ -83,6 +84,7 @@ class PHPRunner():
             "\" & set \"" + self.ScrName() + "\" & set \"" + self.PathInf() + \
             "/\" & set \"" + self.SerName() + "\" & set \"" + self.Protocol() + \
             "\" & set \"" + self.ReqUri() + "\" & set \"" + self.HTTPHost() + \
+            "\" & set \"" + self.HTTPUserAgent() + \
             "\" & set \"" + self.Cookie() + "\" & set \"" + self.QueryStr() + \
             "\" & php-cgi"
             self.cmd = self.get_stmt
@@ -96,6 +98,7 @@ class PHPRunner():
             "\" & set \"" + self.ScrName() + "\" & set \"" + self.PathInf() + \
             "/\" & set \"" + self.SerName() + "\" & set \"" + self.Protocol() + \
             "\" & set \"" + self.ReqUri() + "\" & set \"" + self.HTTPHost() + \
+            "\" & set \"" + self.HTTPUserAgent() + \
             "\" & set \"" + self.Cookie() + "\" & set \"" + self.ConLen() + \
             "\" & set \"" + self.QueryStr() + "\" & echo " + \
             self.Echo() + " | php-cgi"
@@ -226,16 +229,19 @@ class PHPRunner():
         string = "HTTPHOST=" + self.http_host
         return string
 
-
-    def QueryStr(self):
-
-
-        string = "QUERY_STRING=" + self.queries
-        return string
-
     def Cookie(self):
 
         string = "HTTP_COOKIE=" + self.cookie_str + ";"
+        return string
+
+    def HTTPUserAgent(self):
+
+        string = "HTTP_USER_AGENT=" + self.user_agent_str
+        return string
+
+    def QueryStr(self):
+
+        string = "QUERY_STRING=" + self.queries
         return string
 
     def ConLen(self):

@@ -38,5 +38,4 @@ class PHPHeader():
             #self.header['Transfer-Encoding'] = 'chunked'
             self.header['Keep-Alive'] = 'timeout=5, max=100'
 
-        print(self.header)
         return self.header
