@@ -33,6 +33,8 @@ class Peter(socketserver.BaseRequestHandler):
 
 
         # self.request is the request from the client
+        # Todo
+        # Read all bytes received
         self.data = self.request.recv(1024).strip()
 
         current_thread = threading.current_thread()

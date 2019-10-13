@@ -119,6 +119,7 @@ class Header():
         self.functions = {'Host': self._getHost, 'X-Powered-By': self._powered,
                           'Cookie': self._getCookies}
         self.cookies = {}
+        self.cookie_str = ""
 
     def computeResponse(self):
 
@@ -142,6 +143,8 @@ class Header():
         self.Files.request_method = self.request_method
         self._extension = self.Files._file_extension
         self.Files.post_data = self.requested_body
+        self.Files.cookies = self.cookies
+        self.Files.cookie_str = self.cookie_str
         self.Files.search(self.requested_file)
 
         # All variables
@@ -282,6 +285,8 @@ class Header():
         """
 
         # split them in main entries
+        print('_getCookies')
+        self.cookie_str = cookie_str
         splits = cookie_str.split('; ')
 
         for pair in splits:
@@ -291,6 +296,7 @@ class Header():
 
             # Add the key-value pairs to the cookies variable
             self.cookies[pairs[0]] = pairs[1]
+        print('cookies: ', self.cookies)
 
     def _status(self, digit):
         string = 'HTTP/1.1 '
@@ -329,6 +335,7 @@ class Header():
     def _cookie(self, cookies=None):
 
         # set string to empty
+        print('cooki: ', cookies)
         string = ""
 
         if cookies:
@@ -348,6 +355,7 @@ class Header():
                 # add the httponly
                 string += "HttpOnly\r\n"
 
+        print(string)
         return string
 
     def _powered(self, statement):

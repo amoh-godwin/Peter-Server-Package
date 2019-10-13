@@ -38,6 +38,8 @@ class FileSystem():
         self._actual_file = ''
         self.query_string = ''
         self.post_data = ''
+        self.cookies = {}
+        self.cookie_str = ""
         self._no = 0
         self._steps = []
         self._depth = 0
@@ -279,6 +281,7 @@ class FileSystem():
             # run with php and with the query
             phpRunner.encoding = self.encoding
             phpRunner.post_data = self.post_data
+            phpRunner.cookie_str = self.cookie_str
             read = phpRunner.Start(file,
                                    self.query_string,
                                    self.request_method)

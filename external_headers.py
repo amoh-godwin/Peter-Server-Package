@@ -23,6 +23,7 @@ class PHPHeader():
         else:
             splits = headers.split('\\r\\n')
 
+
         # clean it up now
         for header in splits:
             each_splits = header.split(': ')
@@ -30,8 +31,12 @@ class PHPHeader():
             value = each_splits[1]
             self.header[item] = value
 
-        if 'Content-Disposition' in self.header:
+        if 'Set-Cookie' in self.header:
+            self.header['Set-Cookie'] = self.header['Set-Cookie'].replace("C:/Deuteronomy Works/Peter/Server/", "")
+
+        elif 'Content-Disposition' in self.header:
             #self.header['Transfer-Encoding'] = 'chunked'
             self.header['Keep-Alive'] = 'timeout=5, max=100'
 
+        print(self.header)
         return self.header

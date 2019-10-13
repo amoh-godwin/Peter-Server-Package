@@ -22,8 +22,9 @@ class PHPRunner():
         self.queries = ''
         self.method = ''
         self.post_data = ''
+        self.cookie_str = ""
         self.addition_head_str = {}
-        self.redirect_status = 'true'
+        self.redirect_status = '200'
         self.content_type = ''
         self.encoding = ''
         self.file_name = ''
@@ -64,7 +65,12 @@ class PHPRunner():
         self.SerName()
         self.Protocol()
         self.ReqUri()
-        self.HTTPHost()"""
+        self.HTTPHost()
+        self.QueryStr()
+        self.Cookie()
+        self.ContLen()
+        self.Echo()
+        """
 
         # run function that make sense only to these methods
         if method == "GET":
@@ -77,7 +83,8 @@ class PHPRunner():
             "\" & set \"" + self.ScrName() + "\" & set \"" + self.PathInf() + \
             "/\" & set \"" + self.SerName() + "\" & set \"" + self.Protocol() + \
             "\" & set \"" + self.ReqUri() + "\" & set \"" + self.HTTPHost() + \
-            "\" & set \"" + self.QueryStr() + "\" & php-cgi"
+            "\" & set \"" + self.Cookie() + "\" & set \"" + self.QueryStr() + \
+            "\" & php-cgi"
             self.cmd = self.get_stmt
 
         else:
@@ -89,11 +96,13 @@ class PHPRunner():
             "\" & set \"" + self.ScrName() + "\" & set \"" + self.PathInf() + \
             "/\" & set \"" + self.SerName() + "\" & set \"" + self.Protocol() + \
             "\" & set \"" + self.ReqUri() + "\" & set \"" + self.HTTPHost() + \
-            "\" & set \"" + self.ConLen() + "\" & set \"" + self.QueryStr() + \
-            "\" & echo " + self.Echo() + " | php-cgi"
+            "\" & set \"" + self.Cookie() + "\" & set \"" + self.ConLen() + \
+            "\" & set \"" + self.QueryStr() + "\" & echo " + \
+            self.Echo() + " | php-cgi"
             self.cmd = self.post_stmt
 
         # change the directory to the PHP dir
+        print(self.cmd)
         os.chdir(self.directory)
 
         # run the subprocess
@@ -224,6 +233,10 @@ class PHPRunner():
         string = "QUERY_STRING=" + self.queries
         return string
 
+    def Cookie(self):
+
+        string = "HTTP_COOKIE=" + self.cookie_str + ";"
+        return string
 
     def ConLen(self):
 
