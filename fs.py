@@ -35,6 +35,7 @@ class FileSystem():
         self.Default_LOCATION = os.path.join(self.parent_folder, "Server")
         self.status_code = 200
         self.additional_head_str = {}
+        self.additional_set_cookie = []
         self._actual_file = ''
         self.query_string = ''
         self.post_data = ''
@@ -283,11 +284,14 @@ class FileSystem():
             phpRunner.encoding = self.encoding
             phpRunner.post_data = self.post_data
             phpRunner.user_agent_str = self.user_agent_str
+            print('cook: ', self.cookies)
+            print('str: ', self.cookie_str)
             phpRunner.cookie_str = self.cookie_str
             read = phpRunner.Start(file,
                                    self.query_string,
                                    self.request_method)
             self.additional_head_str = phpRunner.addition_head_str
+            self.additional_set_cookie = phpRunner.addition_set_cookie
 
             # set length of the content
             self.contentLength = len(read)

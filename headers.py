@@ -173,6 +173,8 @@ class Header():
             string += ': '
             string += self.send_headers[header]
             string += '\r\n'
+            if header == 'X-Powered-By':
+                string += self.add_set_cookies()
 
         # this kinda ends the response header
         string += '\r\n'
@@ -301,7 +303,6 @@ class Header():
 
             # Add the key-value pairs to the cookies variable
             self.cookies[pairs[0]] = pairs[1]
-        print('cookies: ', self.cookies)
 
     def _status(self, digit):
         string = 'HTTP/1.1 '
@@ -366,6 +367,13 @@ class Header():
 
         string = 'X-Powered-By: ' + statement
         return string + "\r\n"
+
+    def add_set_cookies(self):
+
+        string = ""
+        for l in self.Files.additional_set_cookie:
+            string += l + "\r\n"
+        return string
 
     def _contentType(self):
 

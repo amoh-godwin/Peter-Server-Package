@@ -48,7 +48,7 @@ class Peter(socketserver.BaseRequestHandler):
             req = ""
 
         # This would be used for logging
-        print("{} [Request ] {}".format(self.client_address[0], req))
+        # print("{} [Request ] {}".format(self.client_address[0], req))
 
         # Initialise the header class
         sets = Sets()
@@ -64,7 +64,7 @@ class Peter(socketserver.BaseRequestHandler):
         if len(resp) < 1:
             resp = b''
 
-        print('{} [Response] {}'.format(self.client_address[0], str(peter.status_code)))
+        # print('{} [Response] {}'.format(self.client_address[0], str(peter.status_code)))
 
         # Send the complete data to the browser
         self.request.sendall(resp)
