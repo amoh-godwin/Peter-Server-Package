@@ -17,6 +17,7 @@ class PHPRunner():
         self.cwd = os.getcwd()
         self.parent_folder = parent_folder
         self.host = url
+        self.status_str = ""
         self.directory = os.path.join(self.parent_folder, "bin", "php")
         self.server_dir = os.path.join(self.parent_folder, "Server")
         self.queries = ''
@@ -105,8 +106,7 @@ class PHPRunner():
             self.Echo() + " | php-cgi"
             self.cmd = self.post_stmt
 
-        # change the directory to the PHP dir
-        print(self.cmd)
+        # change the directory to the PHP dir=
         os.chdir(self.directory)
 
         # run the subprocess
@@ -152,7 +152,9 @@ class PHPRunner():
         header = PHPHeader()
         headers_ext = header.computeHeader(headers_str)
         self.addition_head_str = headers_ext
+        print(headers_ext)
         self.addition_set_cookie = header.setcookiesheader
+        self.status_str = header.status_str
 
         # return the bin
         if raw_data:
@@ -250,7 +252,7 @@ class PHPRunner():
 
         # convert echo to bytes
         echo_bin = bytes(self.echo, 'utf-8')
-        self._content_length = len(echo_bin) + 100  # just an over-estimate
+        self._content_length = len(echo_bin)  # just an over-estimate
 
         # make the actual string
         string = "CONTENT_LENGTH=" + str(self._content_length)

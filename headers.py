@@ -30,6 +30,7 @@ class Header():
         self._content_length = 0
         self.raw_headers = ""
         self.status_code = 0
+        self.status_str = ""
         self.headerPair = {}
         self.status_stat = {
                 200: 'OK', 300: 'NOT FOUND', 301: 'MOVED PERMANENTLY',
@@ -157,9 +158,11 @@ class Header():
         self._contentType()
         self.send_headers['Content-Length'] = str(self._contentLength())
         self.status_code = self.Files.status_code
+        self.status_str = self.Files.status_str
 
         # status code
-        string += self._status(self.status_code)
+        string += self._status(self.status_str, self.status_code)
+        print('header: ', string)
 
         # the actual date this whole event was completed
         string += self._date()
@@ -304,10 +307,15 @@ class Header():
             # Add the key-value pairs to the cookies variable
             self.cookies[pairs[0]] = pairs[1]
 
-    def _status(self, digit):
+    def _status(self, status=None, digit=None):
         string = 'HTTP/1.1 '
-        string += str(digit) + " " + self.status_stat[digit] + "\r\n"
-        return string
+        print('st: ', status, 'dit: ', digit)
+        if status:
+            string += status + "\r\n"
+            return string
+        elif digit:
+            string += str(digit) + " " + self.status_stat[digit] + "\r\n"
+            return string
 
     def _date(self):
         string_time = "Date: "

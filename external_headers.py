@@ -8,7 +8,7 @@ class PHPHeader():
         super.__self__
         self.header = {}
         self.setcookiesheader = []
-
+        self.status_str = ""
 
     def computeHeader(self, headers):
 
@@ -28,19 +28,21 @@ class PHPHeader():
 
         # clean it up now
         for header in splits:
-            if header.startswith("Set-Cookie:"):
+            if header.startswith("Set-Cookie"):
+                # Add cookies from PHP
                 self._add_send_cookie(header)
                 continue
+            elif header.startswith("Status"):
+                # Add the status code from PHP
+                self._add_to_status(header)
+                continue
+
             each_splits = header.split(': ')
             item = each_splits[0]
             value = each_splits[1]
             self.header[item] = value
 
-        if 'Set-Cookie' in self.header:
-            print('something wrong')
-            self.header['Set-Cookie'] = self.header['Set-Cookie'].replace("C:/Deuteronomy Works/Peter/Server/", "")
-
-        elif 'Content-Disposition' in self.header:
+        if 'Content-Disposition' in self.header:
             #self.header['Transfer-Encoding'] = 'chunked'
             self.header['Keep-Alive'] = 'timeout=5, max=100'
 
@@ -50,4 +52,9 @@ class PHPHeader():
 
         cleaned = line.replace("C:/Deuteronomy Works/Peter/Server/", "")
         self.setcookiesheader.append(cleaned)
+        return
+
+    def _add_to_status(self, line):
+
+        self.status_str = line.replace('Status: ', '')
         return
