@@ -146,13 +146,13 @@ class PHPRunner():
 
         # get the header
         headers_str = string_split[0]
+        print(headers_str)
 
 
         # send the header
         header = PHPHeader()
         headers_ext = header.computeHeader(headers_str)
         self.addition_head_str = headers_ext
-        print(headers_ext)
         self.addition_set_cookie = header.setcookiesheader
         self.status_str = header.status_str
 

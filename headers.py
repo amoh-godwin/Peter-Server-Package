@@ -162,7 +162,6 @@ class Header():
 
         # status code
         string += self._status(self.status_str, self.status_code)
-        print('header: ', string)
 
         # the actual date this whole event was completed
         string += self._date()
@@ -309,7 +308,6 @@ class Header():
 
     def _status(self, status=None, digit=None):
         string = 'HTTP/1.1 '
-        print('st: ', status, 'dit: ', digit)
         if status:
             string += status + "\r\n"
             return string
@@ -349,7 +347,6 @@ class Header():
     def _cookie(self, cookies=None):
 
         # set string to empty
-        print('cooki: ', cookies)
         string = ""
 
         if cookies:

@@ -23,7 +23,6 @@ class PHPHeader():
         # else split again
         else:
             splits = headers.split('\\r\\n')
-        print(splits)
 
 
         # clean it up now
@@ -42,7 +41,11 @@ class PHPHeader():
             value = each_splits[1]
             self.header[item] = value
 
-        if 'Content-Disposition' in self.header:
+        if 'Location' in self.header:
+
+            self.header['Location'] = self.header['Location'].replace('C:/Deuteronomy Works/Peter/Server/', '')
+
+        elif 'Content-Disposition' in self.header:
             #self.header['Transfer-Encoding'] = 'chunked'
             self.header['Keep-Alive'] = 'timeout=5, max=100'
 

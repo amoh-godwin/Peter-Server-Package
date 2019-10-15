@@ -292,7 +292,6 @@ class FileSystem():
             self.additional_head_str = phpRunner.addition_head_str
             self.additional_set_cookie = phpRunner.addition_set_cookie
             self.status_str = phpRunner.status_str
-            print('status: ', self.status_str)
 
             # set length of the content
             self.contentLength = len(read)
