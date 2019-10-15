@@ -41,11 +41,7 @@ class PHPHeader():
             value = each_splits[1]
             self.header[item] = value
 
-        if 'Location' in self.header:
-
-            self.header['Location'] = self.header['Location'].replace('C:/Deuteronomy Works/Peter/Server/', '')
-
-        elif 'Content-Disposition' in self.header:
+        if 'Content-Disposition' in self.header:
             #self.header['Transfer-Encoding'] = 'chunked'
             self.header['Keep-Alive'] = 'timeout=5, max=100'
 
@@ -53,8 +49,7 @@ class PHPHeader():
 
     def _add_send_cookie(self, line):
 
-        cleaned = line.replace("C:/Deuteronomy Works/Peter/Server/", "")
-        self.setcookiesheader.append(cleaned)
+        self.setcookiesheader.append(line)
         return
 
     def _add_to_status(self, line):

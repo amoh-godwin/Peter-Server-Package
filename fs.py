@@ -264,6 +264,8 @@ class FileSystem():
 
     def _data(self, file):
 
+        file = self._flip_slashes(file)
+        
         # check the file extension for php
         if self._file_extension == 'py':
 
@@ -439,3 +441,12 @@ class FileSystem():
 
         self.data = read.decode(self.encoding)
         return
+
+    def _flip_slashes(self, path):
+
+        if "\\\\" in path:
+            cleaned = path.replace("\\\\", "/")
+        elif "\\" in path:
+            cleaned = path.replace("\\", "/")
+        return cleaned
+

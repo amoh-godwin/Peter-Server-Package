@@ -38,6 +38,7 @@ class Sets():
             self.settings = json.loads(data)
 
         self.parent_folder = self.settings[0]["parent_folder"]
+        print(":", self.parent_folder)
         self.server = self.settings[1]
         self.passcode = self.settings[0]['passcode']
         self.port = self.server[0]["port"]
@@ -54,3 +55,4 @@ class Sets():
         with open(file_path, mode="wb") as sets_file:
             encoded_data = self._encrypt(self.settings)
             sets_file.write(encoded_data)
+

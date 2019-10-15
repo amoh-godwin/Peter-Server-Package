@@ -19,6 +19,7 @@ class PHPRunner():
         self.host = url
         self.status_str = ""
         self.directory = os.path.join(self.parent_folder, "bin", "php")
+        self.document_root = ""
         self.server_dir = os.path.join(self.parent_folder, "Server")
         self.queries = ''
         self.method = ''
@@ -33,9 +34,14 @@ class PHPRunner():
         self.file_name = ''
         self.script_name = ''
         self.path_info = '/'
+        self.server_sig = ""
+        self.server_software = "Peter (Py/3.7)"
         self.server_name = self.host.replace('http://', '')
+        self.server_addr = ""
+        self.server_port= ""
         self.server_protocol = 'HTTP/1.1'
         self.request_uri = ''
+        self.remote_addr = ""
         self.http_host = self.server_name
         self._content_length = 0
         self.echo = ''
@@ -49,10 +55,11 @@ class PHPRunner():
 
         # The variables
         self.file_name = file
-        self.script_name = file
+        specif_file = file.replace("C:/Deuteronomy Works/Peter/Server", "")
+        self.script_name = specif_file
         self.method = method
         self.queries = queries
-        self.request_uri = file
+        self.request_uri = specif_file
 
         # this will indicate whether we are working with raw data or not
         raw_data = False
@@ -65,6 +72,8 @@ class PHPRunner():
         self.ScrFile()
         self.ScrName()
         self.PathInf()
+        self.SerSig()
+        self.SerSoft()
         self.SerName()
         self.Protocol()
         self.ReqUri()
@@ -87,7 +96,8 @@ class PHPRunner():
             "/\" & set \"" + self.SerName() + "\" & set \"" + self.Protocol() + \
             "\" & set \"" + self.ReqUri() + "\" & set \"" + self.HTTPHost() + \
             "\" & set \"" + self.HTTPUserAgent() + \
-            "\" & set \"" + self.Cookie() + "\" & set \"" + self.QueryStr() + \
+            "\" & set \"" + self.Cookie() + "\" & set \"" + self.SerSig() + \
+            "\" & set \"" + self.SerSoft() + "\" & set \"" + self.QueryStr() + \
             "\" & php-cgi"
             self.cmd = self.get_stmt
 
@@ -101,7 +111,8 @@ class PHPRunner():
             "/\" & set \"" + self.SerName() + "\" & set \"" + self.Protocol() + \
             "\" & set \"" + self.ReqUri() + "\" & set \"" + self.HTTPHost() + \
             "\" & set \"" + self.HTTPUserAgent() + \
-            "\" & set \"" + self.Cookie() + "\" & set \"" + self.ConLen() + \
+            "\" & set \"" + self.Cookie() + "\" & set \"" + self.SerSig() + \
+            "\" & set \"" + self.SerSoft() + "\" & set \"" + self.ConLen() + \
             "\" & set \"" + self.QueryStr() + "\" & echo " + \
             self.Echo() + " | php-cgi"
             self.cmd = self.post_stmt
@@ -146,8 +157,6 @@ class PHPRunner():
 
         # get the header
         headers_str = string_split[0]
-        print(headers_str)
-
 
         # send the header
         header = PHPHeader()
@@ -184,6 +193,15 @@ class PHPRunner():
         string = "CONTENT_TYPE=" + self.content_type
         return string
 
+    def SerSig(self):
+
+        string = "SERVER_SIGNATURE=" + self.server_sig
+        return string
+
+    def SerSoft(self):
+
+        string = "SERVER_SOFTWARE=" + self.server_software
+        return string
 
     def ScrFile(self):
 
@@ -208,7 +226,8 @@ class PHPRunner():
 
     def SerName(self):
 
-
+        if ":" in self.server_name:
+            self.server_name = self.server_name.split(":")[0]
         string = "SERVER_NAME=" + self.server_name
         return string
 
