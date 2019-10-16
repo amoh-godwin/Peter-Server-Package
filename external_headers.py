@@ -24,7 +24,6 @@ class PHPHeader():
         else:
             splits = headers.split('\\r\\n')
 
-
         # clean it up now
         for header in splits:
             if header.startswith("Set-Cookie"):

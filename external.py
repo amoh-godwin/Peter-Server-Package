@@ -3,6 +3,7 @@
 
 import os
 import subprocess
+from urllib.parse import urlencode, unquote
 from external_headers import PHPHeader
 class PHPRunner():
 
@@ -19,8 +20,9 @@ class PHPRunner():
         self.host = url
         self.status_str = ""
         self.directory = os.path.join(self.parent_folder, "bin", "php")
-        self.document_root = ""
         self.server_dir = os.path.join(self.parent_folder, "Server")
+        self.document_root = self.server_dir
+        self.con_document_root = self.server_dir
         self.queries = ''
         self.method = ''
         self.post_data = ''
@@ -69,6 +71,8 @@ class PHPRunner():
         """self.RedStat()
         self.ReqMethod()
         self.ContType()
+        self.DocRoot()
+        self.ConDocRoot()
         self.ScrFile()
         self.ScrName()
         self.PathInf()
@@ -97,14 +101,17 @@ class PHPRunner():
             "\" & set \"" + self.ReqUri() + "\" & set \"" + self.HTTPHost() + \
             "\" & set \"" + self.HTTPUserAgent() + \
             "\" & set \"" + self.Cookie() + "\" & set \"" + self.SerSig() + \
-            "\" & set \"" + self.SerSoft() + "\" & set \"" + self.QueryStr() + \
+            "\" & set \"" + self.SerSoft() + \
+            "\" & set \"" + self.SerAddr() + "\" & set \"" + self.SerPort() + \
+            "\" & set \"" + self.DocRoot() + \
+            "\" & set \"" + self.ConDocRoot() + "\" & set \"" + self.QueryStr() + \
             "\" & php-cgi"
             self.cmd = self.get_stmt
 
         else:
 
             self.content_type = "application/x-www-form-urlencoded"
-            self.echo = self.post_data
+            self.echo = self._handle_post_data(self.post_data)
             self.post_stmt = "set \"" + self.RedStat() + "\" & set \"" + self.ReqMethod() + \
             "\" & set \"" + self.ContType() + "\" & set \"" + self.ScrFile() + \
             "\" & set \"" + self.ScrName() + "\" & set \"" + self.PathInf() + \
@@ -112,7 +119,9 @@ class PHPRunner():
             "\" & set \"" + self.ReqUri() + "\" & set \"" + self.HTTPHost() + \
             "\" & set \"" + self.HTTPUserAgent() + \
             "\" & set \"" + self.Cookie() + "\" & set \"" + self.SerSig() + \
-            "\" & set \"" + self.SerSoft() + "\" & set \"" + self.ConLen() + \
+            "\" & set \"" + self.SerSoft() + "\" & set \"" + self.SerAddr() + \
+            "\" & set \"" + self.SerPort() + "\" & set \"" + self.DocRoot() + \
+            "\" & set \"" + self.ConDocRoot() + "\" & set \"" + self.ConLen() + \
             "\" & set \"" + self.QueryStr() + "\" & echo " + \
             self.Echo() + " | php-cgi"
             self.cmd = self.post_stmt
@@ -164,6 +173,8 @@ class PHPRunner():
         self.addition_head_str = headers_ext
         self.addition_set_cookie = header.setcookiesheader
         self.status_str = header.status_str
+        if 'Location' in self.addition_head_str:
+            print('\n', self.host, ":", string, '\n')
 
         # return the bin
         if raw_data:
@@ -171,6 +182,9 @@ class PHPRunner():
         else:
             return(bytes(body, self.encoding))
 
+    def _handle_post_data(self, data):
+
+        return unquote(data)
 
     def RedStat(self):
 
@@ -193,6 +207,16 @@ class PHPRunner():
         string = "CONTENT_TYPE=" + self.content_type
         return string
 
+    def DocRoot(self):
+
+        string = "DOCUMENT_ROOT=" + self.document_root
+        return string
+
+    def ConDocRoot(self):
+
+        string = "CONTEXT_DOCUMENT_ROOT=" + self.con_document_root
+        return string
+
     def SerSig(self):
 
         string = "SERVER_SIGNATURE=" + self.server_sig
@@ -201,6 +225,16 @@ class PHPRunner():
     def SerSoft(self):
 
         string = "SERVER_SOFTWARE=" + self.server_software
+        return string
+
+    def SerAddr(self):
+
+        string = "SERVER_ADDR=" + self.server_addr
+        return string
+
+    def SerPort(self):
+
+        string = "SERVER_PORT=" + self.server_port
         return string
 
     def ScrFile(self):
@@ -271,6 +305,7 @@ class PHPRunner():
 
         # convert echo to bytes
         echo_bin = bytes(self.echo, 'utf-8')
+        print('echo: ', self.echo, '\n')
         self._content_length = len(echo_bin)  # just an over-estimate
 
         # make the actual string
