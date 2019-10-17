@@ -184,6 +184,7 @@ class PHPRunner():
 
     def _handle_post_data(self, data):
 
+        print(unquote(data))
         return unquote(data)
 
     def RedStat(self):
