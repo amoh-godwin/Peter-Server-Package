@@ -3,7 +3,8 @@
 
 import os
 import subprocess
-from urllib.parse import urlencode, unquote
+import base64
+from urllib.parse import urlencode, unquote, quote
 from external_headers import PHPHeader
 class PHPRunner():
 
@@ -173,8 +174,6 @@ class PHPRunner():
         self.addition_head_str = headers_ext
         self.addition_set_cookie = header.setcookiesheader
         self.status_str = header.status_str
-        if 'Location' in self.addition_head_str:
-            print('\n', self.host, ":", string, '\n')
 
         # return the bin
         if raw_data:
@@ -184,16 +183,27 @@ class PHPRunner():
 
     def _handle_post_data(self, data):
 
-        print(unquote(data))
-        return unquote(data)
+        """
+        Most Useless Function
+        """
+        
+        string = ""
+        df =  {}
+        m_splits = data.split('&')
+        for each in m_splits:
+            string += '&'
+            splits = each.split('=')
+            df[splits[0]] = quote(unquote(splits[1]))
+            string += splits[0] + '=' + quote(unquote(splits[1]))
+
+        string = string[1:]
+        return string
 
     def RedStat(self):
-
 
         # make string
         string = "REDIRECT_STATUS=" + self.redirect_status
         return string
-
 
     def ReqMethod(self):
 
@@ -306,8 +316,7 @@ class PHPRunner():
 
         # convert echo to bytes
         echo_bin = bytes(self.echo, 'utf-8')
-        print('echo: ', self.echo, '\n')
-        self._content_length = len(echo_bin)  # just an over-estimate
+        self._content_length = len(echo_bin)# just an over-estimate
 
         # make the actual string
         string = "CONTENT_LENGTH=" + str(self._content_length)

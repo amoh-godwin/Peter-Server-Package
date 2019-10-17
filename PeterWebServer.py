@@ -40,7 +40,7 @@ class Peter(socketserver.BaseRequestHandler):
 
         current_thread = threading.current_thread()
         #print(current_thread.name)
-        
+
         useful = str(self.data, 'utf-8')
         line = useful.splitlines()
         if len(line) > 0:
@@ -49,7 +49,7 @@ class Peter(socketserver.BaseRequestHandler):
             req = ""
 
         # This would be used for logging
-        # print("{} [Request ] {}".format(self.client_address[0], req))
+        print("{} [Request ] {}".format(self.client_address[0], req))
 
         # Initialise the header class
         peter = Header(sets.parent_folder, sets.addr)
