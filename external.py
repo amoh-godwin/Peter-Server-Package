@@ -4,7 +4,7 @@
 import os
 import subprocess
 import base64
-from urllib.parse import urlencode, unquote, quote, unquote_plus
+from urllib.parse import urlencode, unquote, quote, quote_plus, unquote_plus
 from external_headers import PHPHeader
 class PHPRunner():
 
@@ -127,6 +127,7 @@ class PHPRunner():
             "\" & set \"" + self.QueryStr() + "\" & echo " + \
             self.Echo() + " | php-cgi"
             self.cmd = self.post_stmt
+            print('cmd: ', self.cmd)
 
         # change the directory to the PHP dir=
         os.chdir(self.directory)
@@ -325,13 +326,20 @@ class PHPRunner():
         Initialise Echo so content length will have the updated length
         """
         # replace the ampersand(&) with ^^^&
+        print('first: ', self.echo)
         new_text = self.echo.replace('&', '^^^&')
         plus = unquote_plus(new_text)
 
         self.echo = plus
 
+        newer = self.echo.replace('^^^&', 'cccccccccccc')
+        print('ech: ', newer)
+        quoted = quote_plus(newer, safe='=')
+        nes = quoted.replace('cccccccccccc', '^^^&')
+        self.echo = nes
         # Just for the estimate
-        for_est = self.echo.replace('^^^&', '&')
+        for_est = nes.replace('^^^&', '&')
+        print('ok: ', nes)
         
         # convert echo to bytes
         echo_bin = bytes(for_est, 'utf-8')
