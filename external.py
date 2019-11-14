@@ -4,7 +4,7 @@
 import os
 import subprocess
 import base64
-from urllib.parse import urlencode, unquote, quote
+from urllib.parse import urlencode, unquote, quote, unquote_plus
 from external_headers import PHPHeader
 class PHPRunner():
 
@@ -113,6 +113,7 @@ class PHPRunner():
 
             self.content_type = "application/x-www-form-urlencoded"
             self.echo = self._handle_post_data(self.post_data)
+            self.InitEcho()
             self.post_stmt = "set \"" + self.RedStat() + "\" & set \"" + self.ReqMethod() + \
             "\" & set \"" + self.ContType() + "\" & set \"" + self.ScrFile() + \
             "\" & set \"" + self.ScrName() + "\" & set \"" + self.PathInf() + \
@@ -314,21 +315,30 @@ class PHPRunner():
 
     def ConLen(self):
 
-        # convert echo to bytes
-        echo_bin = bytes(self.echo, 'utf-8')
-        self._content_length = len(echo_bin)# just an over-estimate
-
         # make the actual string
         string = "CONTENT_LENGTH=" + str(self._content_length)
         return string
 
+    def InitEcho(self):
+
+        """
+        Initialise Echo so content length will have the updated length
+        """
+        # replace the ampersand(&) with ^^^&
+        new_text = self.echo.replace('&', '^^^&')
+        plus = unquote_plus(new_text)
+
+        self.echo = plus
+
+        # Just for the estimate
+        for_est = self.echo.replace('^^^&', '&')
+        
+        # convert echo to bytes
+        echo_bin = bytes(for_est, 'utf-8')
+        self._content_length = len(echo_bin)
 
     def Echo(self):
 
-
-        # replace the ampersand(&) with ^^^&
-        new_text = self.echo.replace('&', '^^^&')
-
-        # build the string
-        string = new_text
+        # Return the echo
+        string = self.echo
         return string
