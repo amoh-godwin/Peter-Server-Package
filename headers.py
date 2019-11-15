@@ -195,18 +195,16 @@ class Header():
         to be processed by their corresponding functions.
 
         """
-
-        # convert from bytes to text
-        self.raw_headers = str(header, 'ascii')
         
-        if self.raw_headers == '':
+        if header == '':
             return 1
 
         # break
-        splited = self.raw_headers.split('\r\n\r\n')
+        splited = header.split('\r\n\r\n')
 
         # This is the request body that came
         # if it was a post we will use it
+        self.raw_headers = str(splited[0], 'ascii')
         if len(splited) > 1:
             self.requested_body = splited[-1]
         else:

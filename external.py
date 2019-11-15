@@ -126,6 +126,7 @@ class PHPRunner():
             "\" & set \"" + self.QueryStr() + "\" & echo " + \
             self.Echo() + " | php-cgi"
             self.cmd = self.post_stmt
+            print('cmd: ', self.cmd)
 
         # change the directory to the PHP dir=
         os.chdir(self.directory)

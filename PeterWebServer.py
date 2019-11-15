@@ -36,12 +36,15 @@ class Peter(socketserver.BaseRequestHandler):
         # self.request is the request from the client
         # Todo
         # Read all bytes received
-        self.data = self.request.recv(1024).strip()
+        self.data = self.request.recv(2048).strip()
+        #print('data: ', self.data)
 
         current_thread = threading.current_thread()
         #print(current_thread.name)
 
-        useful = str(self.data, 'utf-8')
+        useful = str(self.data.split(b'\r\n\r\n')[0], 'utf-8')
+        print('use: ', useful)
+        #useful = str(self.data, 'utf-8')
         line = useful.splitlines()
         if len(line) > 0:
             req = line[0]
@@ -55,6 +58,7 @@ class Peter(socketserver.BaseRequestHandler):
         peter = Header(sets.parent_folder, sets.addr)
 
         # send the request to be proccesed
+        print('data: ', self.data)
         peter.getRequest(self.data)
 
         # This is the response from the server
