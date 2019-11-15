@@ -113,7 +113,6 @@ class PHPRunner():
 
             self.content_type = "application/x-www-form-urlencoded"
             self.echo = self._handle_post_data(self.post_data)
-            self.InitEcho()
             self.post_stmt = "set \"" + self.RedStat() + "\" & set \"" + self.ReqMethod() + \
             "\" & set \"" + self.ContType() + "\" & set \"" + self.ScrFile() + \
             "\" & set \"" + self.ScrName() + "\" & set \"" + self.PathInf() + \
@@ -127,7 +126,6 @@ class PHPRunner():
             "\" & set \"" + self.QueryStr() + "\" & echo " + \
             self.Echo() + " | php-cgi"
             self.cmd = self.post_stmt
-            print('cmd: ', self.cmd)
 
         # change the directory to the PHP dir=
         os.chdir(self.directory)
@@ -188,18 +186,15 @@ class PHPRunner():
         """
         Most Useless Function
         """
-        
-        string = ""
+
         df =  {}
         m_splits = data.split('&')
         for each in m_splits:
-            string += '&'
             splits = each.split('=')
-            df[splits[0]] = quote(unquote(splits[1]))
-            string += splits[0] + '=' + quote(unquote(splits[1]))
+            df[splits[0]] = unquote_plus(splits[1])
 
-        string = string[1:]
-        return string
+        encoded = urlencode(df)
+        return encoded
 
     def RedStat(self):
 
@@ -316,37 +311,15 @@ class PHPRunner():
 
     def ConLen(self):
 
+        echo_bin = bytes(self.echo, 'utf-8')
+        self._content_length = len(echo_bin)
+        
         # make the actual string
         string = "CONTENT_LENGTH=" + str(self._content_length)
         return string
 
-    def InitEcho(self):
-
-        """
-        Initialise Echo so content length will have the updated length
-        """
-        # replace the ampersand(&) with ^^^&
-        print('first: ', self.echo)
-        new_text = self.echo.replace('&', '^^^&')
-        plus = unquote_plus(new_text)
-
-        self.echo = plus
-
-        newer = self.echo.replace('^^^&', 'cccccccccccc')
-        print('ech: ', newer)
-        quoted = quote_plus(newer, safe='=')
-        nes = quoted.replace('cccccccccccc', '^^^&')
-        self.echo = nes
-        # Just for the estimate
-        for_est = nes.replace('^^^&', '&')
-        print('ok: ', nes)
-        
-        # convert echo to bytes
-        echo_bin = bytes(for_est, 'utf-8')
-        self._content_length = len(echo_bin)
-
     def Echo(self):
 
         # Return the echo
-        string = self.echo
+        string = self.echo.replace('&', '^^^&')
         return string
