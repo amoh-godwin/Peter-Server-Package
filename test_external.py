@@ -42,9 +42,10 @@ def test_php_get_req(req):
     assert body_str == ret_value
 
 
-@pytest.mark.parametrize('req', [('ordinary+text'),
+@pytest.mark.parametrize('req', [('ordinarytext'),
+                                 ('ordinary text'),
                                  ('4'),
-                                 ('%^&*()_+')])
+                                 ('~`!@#$%^&*()_-+=')])
 def test_php_post_req(req):
     parsed = quote_plus(req)
     request = req = 'test_string=' + parsed
@@ -60,7 +61,7 @@ def test_php_post_req(req):
         string += '  ["' + splits[0] + '"]=>\n  string(' + \
         str(len(splits[1])) + ') "' + splits[1] + '"\n'
     string += '}\n'
-    ret_value = string+'d'
+    ret_value = string
     print('ret: ', ret_value)
 
     req_string = 'POST /_tests/phpPostReq.php HTTP/1.1\r\n\r\n' + request
