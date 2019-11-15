@@ -109,7 +109,7 @@ class PHPRunner():
             "\" & php-cgi"
             self.cmd = self.get_stmt
 
-        else:
+        elif method == "POST":
 
             self.content_type = "application/x-www-form-urlencoded"
             self.echo = self._handle_post_data(self.post_data)
