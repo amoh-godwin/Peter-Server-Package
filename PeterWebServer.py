@@ -34,10 +34,10 @@ class Peter(socketserver.BaseRequestHandler):
 
 
         # self.request is the request from the client
+        #TODO
+        # Use real memory size
         max_length = 1000000000
         self.data = self.request.recv(1024).strip()
-
-        #print('data: ', self.data)
 
         current_thread = threading.current_thread()
         #print(current_thread.name)
@@ -49,7 +49,8 @@ class Peter(socketserver.BaseRequestHandler):
             req = line[0]
         else:
             req = ""
-            
+        
+        req_length = 0
         for l in line:
             if l.startswith('Content-Length:'):
                 if ' ' in l:
@@ -59,6 +60,8 @@ class Peter(socketserver.BaseRequestHandler):
 
         if req_length > max_length:
             return 'Exceeded Maximum limit'
+        elif req_length < 1024:
+            pass
         else:
             self.data += self.request.recv(req_length).strip()
 

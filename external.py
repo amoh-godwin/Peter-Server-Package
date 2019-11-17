@@ -28,6 +28,7 @@ class PHPRunner():
         self.con_document_root = self.server_dir
         self.queries = ''
         self.method = ''
+        self.post_method = ""
         self.post_data = ''
         self.cookie_str = ""
         self.user_agent_str = ""
@@ -64,6 +65,8 @@ class PHPRunner():
         specif_file = file.replace("C:/Deuteronomy Works/Peter/Server", "")
         self.script_name = specif_file
         self.method = method
+        if self.content_type.startswith("multipart/form-data"):
+            self.post_method = 'FILES'
         self.queries = queries
         self.request_uri = specif_file
 
@@ -116,7 +119,6 @@ class PHPRunner():
 
             if self.content_type.startswith("multipart/form-data"):
 
-                print('multipart here')
                 #self.content_type = "image/png"
                 self.echo = self._handle_post_data(self.post_data)
                 self.post_stmt = "set \"" + self.RedStat() + \
@@ -136,7 +138,6 @@ class PHPRunner():
             else:
                 self.content_type = "application/x-www-form-urlencoded"
                 self.echo = self._handle_post_data(self.post_data)
-                print('break not')
                 self.post_stmt = "set \"" + self.RedStat() + "\" & set \"" + self.ReqMethod() + \
                 "\" & set \"" + self.ContType() + "\" & set \"" + self.ScrFile() + \
                 "\" & set \"" + self.ScrName() + "\" & set \"" + self.PathInf() + \
@@ -149,10 +150,10 @@ class PHPRunner():
                 "\" & set \"" + self.ConDocRoot() + "\" & set \"" + self.ConLen() + \
                 "\" & set \"" + self.QueryStr() + "\" & echo " + \
                 self.Echo() + " | php-cgi"
-                print('beasdfsdf')
                 self.cmd = self.post_stmt
-                print('somehow')
-                print('cmd: ', self.cmd)
+
+        else:
+            return 'Request method: ' + method + ' is not handled'
 
         # change the directory to the PHP dir=
         os.chdir(self.directory)
@@ -214,12 +215,10 @@ class PHPRunner():
     def _handle_post_data(self, data):
 
         """
-        Most Useless Function
+        Handles the post data
         """
 
-        print('post data: ', type(data))
-        
-        if type(data) == type(b''):
+        if self.post_method == 'FILES':
             bound = data.split(b'\r\n')[0]
             new_data = data + b'\r\n' + bound + b'--'
             nee = str(new_data)[2:-1]
@@ -230,6 +229,7 @@ class PHPRunner():
                 dat.write(new_data)
             return nee
         else:
+            data = str(data)[2:-1]
             df =  {}
             m_splits = data.split('&')
             for each in m_splits:
@@ -380,5 +380,6 @@ class PHPRunner():
 
     def _garbage_collection(self):
 
-        # delete temporary files
-        os.remove(self.tmp_file)
+        if self.tmp_file:
+            # delete temporary files
+            os.remove(self.tmp_file)
