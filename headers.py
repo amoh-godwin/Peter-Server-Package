@@ -204,7 +204,6 @@ class Header():
 
         # break
         splited = header.split(b'\r\n\r\n', 1)
-        print('main splitted: ', splited)
 
         # This is the request body that came
         # if it was a post we will use it
