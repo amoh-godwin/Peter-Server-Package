@@ -20,6 +20,7 @@ class PHPRunner():
         self.parent_folder = parent_folder
         self.host = url
         self.status_str = ""
+        self.server_tmp = os.path.join(self.parent_folder, "bin", "tmp")
         self.directory = os.path.join(self.parent_folder, "bin", "php")
         self.server_dir = os.path.join(self.parent_folder, "Server")
         self.document_root = self.server_dir
@@ -48,6 +49,7 @@ class PHPRunner():
         self.http_host = self.server_name
         self._content_length = 0
         self.echo = ''
+        self.tmp_file = ""
         self.get_stmt = ""
         self.post_stmt = ""
         self.cmd = ""
@@ -127,7 +129,7 @@ class PHPRunner():
                 "\" & set \"" + self.SerSoft() + "\" & set \"" + self.SerAddr() + \
                 "\" & set \"" + self.SerPort() + "\" & set \"" + self.DocRoot() + \
                 "\" & set \"" + self.ConDocRoot() + "\" & set \"" + self.ConLen() + \
-                "\" & set \"" + self.QueryStr() + "\" & type \"H:/GitHub/Peter-Server-Package/some.bin\"" + " | php-cgi"
+                "\" & set \"" + self.QueryStr() + "\" & type " + self.Type() + " | php-cgi"
                 self.cmd = self.post_stmt
 
             else:
@@ -199,6 +201,9 @@ class PHPRunner():
         self.addition_set_cookie = header.setcookiesheader
         self.status_str = header.status_str
 
+        # GARBAGE COLLECTION BEFORE RETURN
+        self._garbage_collection()
+
         # return the bin
         if raw_data:
             return body
@@ -217,11 +222,11 @@ class PHPRunner():
             bound = data.split(b'\r\n')[0]
             new_data = data + b'\r\n' + bound + b'--'
             nee = str(new_data)[2:-1]
-            
-            with open("H:/GitHub/Peter-Server-Package/some.bin", 'wb') as dat:
+
+            self.tmp_file = os.path.join(self.server_tmp, "some.bin")
+            with open(self.tmp_file, 'wb') as dat:
                 dat.write(new_data)
-            print('file open')
-            return nee + nee
+            return nee
         else:
             df =  {}
             m_splits = data.split('&')
@@ -369,4 +374,14 @@ class PHPRunner():
             # Return the echo
             string = self.echo.replace('&', '^^^&')
             #return string
-            return self.echo
+            return string
+
+    def Type(self):
+
+        return '\"' + self.tmp_file + '\"'
+
+
+    def _garbage_collection(self):
+
+        # delete temporary files
+        os.remove(self.tmp_file)

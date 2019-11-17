@@ -34,9 +34,9 @@ class Peter(socketserver.BaseRequestHandler):
 
 
         # self.request is the request from the client
-        # Todo
-        # Read all bytes received
-        self.data = self.request.recv(100000).strip()
+        max_length = 1000000000
+        self.data = self.request.recv(1024).strip()
+
         #print('data: ', self.data)
 
         current_thread = threading.current_thread()
@@ -44,10 +44,23 @@ class Peter(socketserver.BaseRequestHandler):
 
         useful = str(self.data.split(b'\r\n\r\n')[0], 'utf-8')
         line = useful.splitlines()
+
         if len(line) > 0:
             req = line[0]
         else:
             req = ""
+            
+        for l in line:
+            if l.startswith('Content-Length:'):
+                if ' ' in l:
+                    req_length = int(l.split(': ')[-1])
+                else:
+                    req_length = int(l.split(':')[-1])
+
+        if req_length > max_length:
+            return 'Exceeded Maximum limit'
+        else:
+            self.data += self.request.recv(req_length).strip()
 
         # This would be used for logging
         print("{} [Request ] {}".format(self.client_address[0], req))
