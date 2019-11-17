@@ -21,6 +21,7 @@ class Header():
         self.parent_folder = parent_folder
         self.host = url
         self.port = 0
+        self.content_type = ""
         self.request_method = ''
         self.requested_file = ''
         self.requested_body = ''
@@ -118,6 +119,7 @@ class Header():
                         'wmf': 'image/wmf', 'ico': 'image/ico'}
         self.functions = {'Host': self._getHost, 'X-Powered-By': self._powered,
                           'User-Agent': self._getUserAgent,
+                          'Content-Type': self._getContentType,
                           'Cookie': self._getCookies}
         self.cookies = {}
         self.cookie_str = ""
@@ -143,6 +145,7 @@ class Header():
         # calculation of the data the we will be sending
         self.Files = FileSystem(self.parent_folder, self.host)
         self.Files.request_method = self.request_method
+        self.Files.content_type = self.content_type
         self._extension = self.Files._file_extension
         self.Files.post_data = self.requested_body
         self.Files.cookies = self.cookies
@@ -200,7 +203,8 @@ class Header():
             return 1
 
         # break
-        splited = header.split('\r\n\r\n')
+        splited = header.split(b'\r\n\r\n', 1)
+        print('main splitted: ', splited)
 
         # This is the request body that came
         # if it was a post we will use it
@@ -246,6 +250,10 @@ class Header():
                 # This means, every corresponding function must strictly
                 # accept a single value
                 function(self.headerPair[func])
+
+    def _getContentType(self, content_type_str):
+
+        self.content_type = content_type_str
 
     def _getHost(self, hostname_str):
 

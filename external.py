@@ -3,7 +3,7 @@
 
 import os
 import subprocess
-import base64
+from base64 import b64encode
 from urllib.parse import urlencode, unquote, quote, quote_plus, unquote_plus
 from external_headers import PHPHeader
 class PHPRunner():
@@ -111,22 +111,45 @@ class PHPRunner():
 
         elif method == "POST":
 
-            self.content_type = "application/x-www-form-urlencoded"
-            self.echo = self._handle_post_data(self.post_data)
-            self.post_stmt = "set \"" + self.RedStat() + "\" & set \"" + self.ReqMethod() + \
-            "\" & set \"" + self.ContType() + "\" & set \"" + self.ScrFile() + \
-            "\" & set \"" + self.ScrName() + "\" & set \"" + self.PathInf() + \
-            "/\" & set \"" + self.SerName() + "\" & set \"" + self.Protocol() + \
-            "\" & set \"" + self.ReqUri() + "\" & set \"" + self.HTTPHost() + \
-            "\" & set \"" + self.HTTPUserAgent() + \
-            "\" & set \"" + self.Cookie() + "\" & set \"" + self.SerSig() + \
-            "\" & set \"" + self.SerSoft() + "\" & set \"" + self.SerAddr() + \
-            "\" & set \"" + self.SerPort() + "\" & set \"" + self.DocRoot() + \
-            "\" & set \"" + self.ConDocRoot() + "\" & set \"" + self.ConLen() + \
-            "\" & set \"" + self.QueryStr() + "\" & echo " + \
-            self.Echo() + " | php-cgi"
-            self.cmd = self.post_stmt
-            print('cmd: ', self.cmd)
+            if self.content_type.startswith("multipart/form-data"):
+
+                print('multipart here')
+                #self.content_type = "image/png"
+                self.echo = self._handle_post_data(self.post_data)
+                self.post_stmt = "set \"" + self.RedStat() + \
+                "\" & set \"" + self.ReqMethod() + "\" & set \"" + self.ContDisp() + \
+                "\" & set \"" + self.ContType() + "\" & set \"" + self.ScrFile() + \
+                "\" & set \"" + self.ScrName() + "\" & set \"" + self.PathInf() + \
+                "/\" & set \"" + self.SerName() + "\" & set \"" + self.Protocol() + \
+                "\" & set \"" + self.ReqUri() + "\" & set \"" + self.HTTPHost() + \
+                "\" & set \"" + self.HTTPUserAgent() + \
+                "\" & set \"" + self.Cookie() + "\" & set \"" + self.SerSig() + \
+                "\" & set \"" + self.SerSoft() + "\" & set \"" + self.SerAddr() + \
+                "\" & set \"" + self.SerPort() + "\" & set \"" + self.DocRoot() + \
+                "\" & set \"" + self.ConDocRoot() + "\" & set \"" + self.ConLen() + \
+                "\" & set \"" + self.QueryStr() + "\" & type \"H:/GitHub/Peter-Server-Package/some.bin\"" + " | php-cgi"
+                self.cmd = self.post_stmt
+
+            else:
+                self.content_type = "application/x-www-form-urlencoded"
+                self.echo = self._handle_post_data(self.post_data)
+                print('break not')
+                self.post_stmt = "set \"" + self.RedStat() + "\" & set \"" + self.ReqMethod() + \
+                "\" & set \"" + self.ContType() + "\" & set \"" + self.ScrFile() + \
+                "\" & set \"" + self.ScrName() + "\" & set \"" + self.PathInf() + \
+                "/\" & set \"" + self.SerName() + "\" & set \"" + self.Protocol() + \
+                "\" & set \"" + self.ReqUri() + "\" & set \"" + self.HTTPHost() + \
+                "\" & set \"" + self.HTTPUserAgent() + \
+                "\" & set \"" + self.Cookie() + "\" & set \"" + self.SerSig() + \
+                "\" & set \"" + self.SerSoft() + "\" & set \"" + self.SerAddr() + \
+                "\" & set \"" + self.SerPort() + "\" & set \"" + self.DocRoot() + \
+                "\" & set \"" + self.ConDocRoot() + "\" & set \"" + self.ConLen() + \
+                "\" & set \"" + self.QueryStr() + "\" & echo " + \
+                self.Echo() + " | php-cgi"
+                print('beasdfsdf')
+                self.cmd = self.post_stmt
+                print('somehow')
+                print('cmd: ', self.cmd)
 
         # change the directory to the PHP dir=
         os.chdir(self.directory)
@@ -188,14 +211,26 @@ class PHPRunner():
         Most Useless Function
         """
 
-        df =  {}
-        m_splits = data.split('&')
-        for each in m_splits:
-            splits = each.split('=')
-            df[splits[0]] = unquote_plus(splits[1])
-
-        encoded = urlencode(df)
-        return encoded
+        print('post data: ', type(data))
+        
+        if type(data) == type(b''):
+            bound = data.split(b'\r\n')[0]
+            new_data = data + b'\r\n' + bound + b'--'
+            nee = str(new_data)[2:-1]
+            
+            with open("H:/GitHub/Peter-Server-Package/some.bin", 'wb') as dat:
+                dat.write(new_data)
+            print('file open')
+            return nee + nee
+        else:
+            df =  {}
+            m_splits = data.split('&')
+            for each in m_splits:
+                splits = each.split('=')
+                df[splits[0]] = unquote_plus(splits[1])
+    
+            encoded = urlencode(df)
+            return encoded
 
     def RedStat(self):
 
@@ -209,6 +244,10 @@ class PHPRunner():
         string = "REQUEST_METHOD=" + self.method
         return string
 
+    def ContDisp(self):
+
+        string = 'CONTENT-DISPOSITION=form-data; name=\'Joe\''
+        return string
 
     def ContType(self):
 
@@ -312,8 +351,11 @@ class PHPRunner():
 
     def ConLen(self):
 
-        echo_bin = bytes(self.echo, 'utf-8')
-        self._content_length = len(echo_bin)
+        if type(self.echo) == type(b''):
+            self._content_length = len(self.echo)
+        else:
+            echo_bin = bytes(self.echo, 'utf-8')
+            self._content_length = len(echo_bin)
         
         # make the actual string
         string = "CONTENT_LENGTH=" + str(self._content_length)
@@ -321,6 +363,10 @@ class PHPRunner():
 
     def Echo(self):
 
-        # Return the echo
-        string = self.echo.replace('&', '^^^&')
-        return string
+        if self.content_type.startswith('multipart/form-data'):
+            return self.echo
+        else:
+            # Return the echo
+            string = self.echo.replace('&', '^^^&')
+            #return string
+            return self.echo

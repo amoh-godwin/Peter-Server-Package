@@ -46,6 +46,7 @@ class FileSystem():
         self._no = 0
         self._steps = []
         self._depth = 0
+        self.content_type = ''
         self.SCRIPTS_LOCATION = os.path.join(self.parent_folder, "_scripts")
         self._file_extension = 'html'
         self.mime_type = ''
@@ -287,6 +288,7 @@ class FileSystem():
             phpRunner.encoding = self.encoding
             phpRunner.post_data = self.post_data
             phpRunner.user_agent_str = self.user_agent_str
+            phpRunner.content_type = self.content_type
             phpRunner.cookie_str = self.cookie_str
             read = phpRunner.Start(file,
                                    self.query_string,
