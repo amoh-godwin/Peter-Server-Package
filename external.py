@@ -5,6 +5,7 @@ import os
 import subprocess
 from base64 import b64encode
 from urllib.parse import urlencode, unquote, quote, quote_plus, unquote_plus
+from random import randrange
 from external_headers import PHPHeader
 class PHPRunner():
 
@@ -119,7 +120,7 @@ class PHPRunner():
                 #self.content_type = "image/png"
                 self.echo = self._handle_post_data(self.post_data)
                 self.post_stmt = "set \"" + self.RedStat() + \
-                "\" & set \"" + self.ReqMethod() + "\" & set \"" + self.ContDisp() + \
+                "\" & set \"" + self.ReqMethod() + \
                 "\" & set \"" + self.ContType() + "\" & set \"" + self.ScrFile() + \
                 "\" & set \"" + self.ScrName() + "\" & set \"" + self.PathInf() + \
                 "/\" & set \"" + self.SerName() + "\" & set \"" + self.Protocol() + \
@@ -223,7 +224,8 @@ class PHPRunner():
             new_data = data + b'\r\n' + bound + b'--'
             nee = str(new_data)[2:-1]
 
-            self.tmp_file = os.path.join(self.server_tmp, "some.bin")
+            rand_file = str(randrange(1, 650)) + '.tmpfile'
+            self.tmp_file = os.path.join(self.server_tmp, rand_file)
             with open(self.tmp_file, 'wb') as dat:
                 dat.write(new_data)
             return nee
@@ -368,18 +370,13 @@ class PHPRunner():
 
     def Echo(self):
 
-        if self.content_type.startswith('multipart/form-data'):
-            return self.echo
-        else:
-            # Return the echo
-            string = self.echo.replace('&', '^^^&')
-            #return string
-            return string
+        string = self.echo.replace('&', '^^^&')
+        #return string
+        return string
 
     def Type(self):
 
         return '\"' + self.tmp_file + '\"'
-
 
     def _garbage_collection(self):
 
