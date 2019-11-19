@@ -16,6 +16,7 @@ sets = Sets()
 
 class Peter(socketserver.BaseRequestHandler):
 
+
     """
     The Peter Server Implementation
 
@@ -31,7 +32,6 @@ class Peter(socketserver.BaseRequestHandler):
 
         handles the request and response from the server
         """
-
 
         # self.request is the request from the client
         #TODO
@@ -49,7 +49,7 @@ class Peter(socketserver.BaseRequestHandler):
             req = line[0]
         else:
             req = ""
-        
+
         req_length = 0
         for l in line:
             if l.startswith('Content-Length:'):
