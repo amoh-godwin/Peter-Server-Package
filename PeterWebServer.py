@@ -112,19 +112,19 @@ def _run_server(HOST, PORT):
         try:
             with ThreadTCP((HOST, PORT), Peter) as server:
                 # interrupt the program with Ctrl-C
-        
+
                 print('\n')
                 print('Server Started at PORT:', str(PORT))
                 print('**********************************')
                 print('\n\n')
-        
+
                 server.serve_forever()
 
         except KeyboardInterrupt:
             print('Keyborad Interrupt, Server has exited')
 
 if __name__ == "__main__":
-    
+
     # if user passed in any other value
     # should be in the second index
     if len(sys.argv) > 1:
