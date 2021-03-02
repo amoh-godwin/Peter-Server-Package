@@ -7,6 +7,7 @@ import threading
 import socketserver
 
 import sys
+import os
 
 from headers import Header
 
@@ -68,7 +69,9 @@ class Peter(socketserver.BaseRequestHandler):
         print("{} [Request ] {}".format(self.client_address[0], req))
 
         # Initialise the header class
-        peter = Header(sets.parent_folder, sets.addr)
+        # Make path innocent on any OS
+        parent_folder = os.path.realpath(sets.parent_folder)
+        peter = Header(parent_folder, sets.addr)
 
         # send the request to be proccesed
         peter.getRequest(self.data)
