@@ -107,7 +107,8 @@ class Sets():
     def save_database_pid(self, id, pid):
         conn = sqlite3.connect('settings.db')
         cursor = conn.cursor()
-        sql = f"""UPDATE database_processes SET pid={pid} WHERE server_id={id}"""
+        sql = f"""UPDATE database_processes SET pid={pid}"""
+        sql += f""" WHERE server_id={id}"""
         cursor.execute(sql)
         conn.commit()
         conn.close()
@@ -116,7 +117,8 @@ class Sets():
         conn = sqlite3.connect('settings.db')
         cursor = conn.cursor()
         pid = 0
-        sql = f"""UPDATE server_processes SET pid={pid} WHERE server_id={id}"""
+        sql = f"""UPDATE server_processes SET pid={pid}"""
+        sql += f""" WHERE server_id={id}"""
         cursor.execute(sql)
         conn.commit()
         conn.close()
