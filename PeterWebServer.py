@@ -2,12 +2,12 @@
 """
 Created on Sun Apr 22 15:52:27 2018
 @author: Amoh - Gyebi Godwin
-# To You oh, LORD i commit myself
 """
 import threading
 import socketserver
 
 import sys
+import os
 
 from headers import Header
 
@@ -69,7 +69,9 @@ class Peter(socketserver.BaseRequestHandler):
         print("{} [Request ] {}".format(self.client_address[0], req))
 
         # Initialise the header class
-        peter = Header(sets.parent_folder, sets.addr)
+        # Make path innocent on any OS
+        parent_folder = os.path.realpath(sets.parent_folder)
+        peter = Header(parent_folder, sets.addr)
 
         # send the request to be proccesed
         peter.getRequest(self.data)
@@ -112,19 +114,19 @@ def _run_server(HOST, PORT):
         try:
             with ThreadTCP((HOST, PORT), Peter) as server:
                 # interrupt the program with Ctrl-C
-        
+
                 print('\n')
                 print('Server Started at PORT:', str(PORT))
                 print('**********************************')
                 print('\n\n')
-        
+
                 server.serve_forever()
 
         except KeyboardInterrupt:
             print('Keyborad Interrupt, Server has exited')
 
 if __name__ == "__main__":
-    
+
     # if user passed in any other value
     # should be in the second index
     if len(sys.argv) > 1:
