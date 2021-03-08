@@ -1,0 +1,42 @@
+# This workflow will build and upload packages to this repos github release
+# For more information see: https://help.github.com/en/actions/language-and-framework-guides/using-python-with-github-actions#publishing-to-package-registries
+
+name: Upload Python Package
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  deploy:
+    name: Deploy to various OSes
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macOS-latest]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+    - name: Install dependencies
+      run: |
+        pip install pyinstaller
+    - name: Build and publish
+      run: |
+        pyinstaller PeterWebServer.spec
+        python uploader.py ${{ matrix.os }} ${{ secrets.ACCESS_TOKEN }}
+
+
+
+
+
+
+
+
+
+
+
+
